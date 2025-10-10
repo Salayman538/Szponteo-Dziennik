@@ -1,38 +1,13 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+// app/(tabs)/index.tsx
+import { SafeAreaView } from 'react-native-safe-area-context'
+import LessonsList from '../../components/LessonsList' // Zaktualizowana ścieżka do komponentu
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
-import "../../global.css";
-
-export default function HomeScreen() {
+const TimeTableView = () => {
   return (
-    <View>
-      <Text className="font-bold text-red-500">
-        Nigger
-      </Text>
-    </View>
-  );
+    <SafeAreaView style={{ flex: 1 }}>
+      <LessonsList />
+    </SafeAreaView>
+  )
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+export default TimeTableView

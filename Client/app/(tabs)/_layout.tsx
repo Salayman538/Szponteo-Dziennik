@@ -1,35 +1,47 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+// app/(tabs)/_layout.tsx
+import { Tabs } from 'expo-router'
+import { Ionicons } from '@expo/vector-icons'
+import React from 'react'
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+        tabBarActiveTintColor: '#155dfc',
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false, // Opcjonalnie: ukryj nagłówki ekranów
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="index" // Odpowiada plikowi app/(tabs)/index.tsx (Plan Lekcji)
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Plan Lekcji',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="grades" // Odpowiada plikowi app/(tabs)/grades.tsx (Oceny)
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Oceny',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="medal" size={size} color={color} />
+          ),
         }}
       />
+      <Tabs.Screen
+        name="attendance" // Odpowiada plikowi app/(tabs)/attendance.tsx (Frekwencja)
+        options={{
+          title: 'Frekwencja',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="stats-chart" size={size} color={color} />
+          ),
+        }}
+      />
+      {/* Możesz dodać ukryty ekran, np. dla modala, który ma nie mieć zakładki.
+        <Tabs.Screen name="modal" options={{ headerShown: false, href: null }} />
+      */}
     </Tabs>
-  );
+  )
 }
