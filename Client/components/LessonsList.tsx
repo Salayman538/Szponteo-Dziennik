@@ -15,6 +15,7 @@ dayjs.extend(customParseFormat)
 
 const LessonList = () => {
   const [selectedDay, setSelectedDay] = useState(dayjs().format('DD.MM'))
+  const [scrollEnabled, setScrollEnabled] = useState(true)
 
   const formattedDate = dayjs(selectedDay, 'DD.MM', true).format('YYYY-MM-DD')
   const { lessons, isPending, isError } = useLessons(formattedDate)
@@ -22,8 +23,13 @@ const LessonList = () => {
   if (isError) return <ErrorMessage />
 
   return (
-    <ScrollView>
-      <WeekNavigator selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+    <ScrollView scrollEnabled={scrollEnabled}>
+      <WeekNavigator
+        selectedDay={selectedDay}
+        setSelectedDay={setSelectedDay}
+        onGestureStart={() => setScrollEnabled(false)}
+        onGestureEnd={() => setScrollEnabled(true)}
+      />
       <View className="px-2 mb-5">
         {isPending ? (
           <LoadingScreen />
