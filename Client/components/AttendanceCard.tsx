@@ -5,6 +5,7 @@ import AntDesign from '@expo/vector-icons/AntDesign'
 import Entypo from '@expo/vector-icons/Entypo'
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
 import { MaterialIcons } from '@expo/vector-icons'
+import { FontAwesome } from '@expo/vector-icons'
 
 interface AttendaceCardProps {
   attendance: AttendanceDay
@@ -26,6 +27,16 @@ const AttendaceCard = ({ attendance }: AttendaceCardProps) => {
       icon: <Entypo name="emoji-neutral" size={24} color="#2563eb" />,
       bg: 'bg-blue-100/80',
       border: 'border-blue-200'
+    },
+    spóźnienie: {
+      icon: <FontAwesome5 name="clock" size={24} color='#f4701eff'/>,
+      bg: 'bg-orange-100/80',
+      border: 'border-orange-200'
+    },
+    'spóźn. uspr.': {
+      icon: <FontAwesome5 name="clock" size={24} color='#971ef4ff'/>,
+      bg: 'bg-purple-100/80',
+      border: 'border-purple-200'
     },
     default: {
       icon: <AntDesign name="questioncircle" size={24} color="#4b5563" />,
