@@ -1,5 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 from vulcan import Keystore, Account, Vulcan
+from contextlib import asynccontextmanager
+from collections import defaultdict
+from datetime import date, timedelta
+from pydantic import BaseModel
+from starlette.concurrency import run_in_threadpool
+from attendance_calculator import fetch_attendance_data, _calculate_attendance, TARGET_PERIOD_NUMBER, to_python_date
+from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from collections import defaultdict
 from datetime import date, timedelta
@@ -68,7 +75,7 @@ async def get_week_lessons(date_from, date_to):
                 [
                     {
                         'position': lesson.time.position, 
-                        'date': lesson.date.date, 
+                        'date': lesson.date.date.isoformat(), 
                         'time': lesson.time.displayed_time, 
                         'name': lesson.subject.name, 
                         'room': lesson.room.code, 
@@ -98,7 +105,7 @@ async def get_week_attendance(date_from, date_to):
     attendance_list = [
             {
                 'position': attendance.time.position,
-                'date': attendance.date.date,
+                'date': to_python_date(attendance.date).isoformat(),
                 'time': attendance.time.displayed_time, 
                 'name': attendance.subject.name if attendance.subject else None,
                 'value': attendance.presence_type.name if attendance.presence_type else None
@@ -181,3 +188,50 @@ async def get_attendance(date_from: date, date_to: date):
         return attendance
     except Exception as e:
         return {"error": str(e)}
+    
+    #Michal Goscinski type shit
+class AttendanceResponse(BaseModel):
+    subject: str
+    period_number: int
+    attendance_percentage: float
+    period_start: str
+    period_end: str
+    available_subjects: list[str]
+
+@app.get("/api/frekwencja", response_model=AttendanceResponse)
+async def get_semester_attendance(subject: str = "all"):
+    global client
+
+    if client is None:
+        raise HTTPException(status_code=503, detail="Klient Vulcan nie został zainicjalizowany. Spróbuj później.")
+
+    try:
+        raw_records, date_from, date_to = await fetch_attendance_data(client, TARGET_PERIOD_NUMBER)
+
+        available_subjects = sorted({r.get('subject_name','Nieznany') for r in raw_records})
+
+        subject_norm = subject.lower()
+        if subject_norm != "all":
+            filtered_records = [r for r in raw_records if r.get("subject_name","").lower() == subject_norm]
+        else:
+            filtered_records = raw_records
+
+        percentage = await run_in_threadpool(_calculate_attendance, filtered_records, subject_norm)
+
+        display_subject = subject
+        if display_subject.lower() == "all":
+            display_subject = "Frekwencja ogólna"
+
+        return AttendanceResponse(
+            subject=display_subject,
+            period_number=TARGET_PERIOD_NUMBER,
+            attendance_percentage=percentage,
+            period_start=date_from.isoformat(),
+            period_end=date_to.isoformat(),
+            available_subjects=available_subjects
+        )
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Błąd przetwarzania frekwencji: {e}")
