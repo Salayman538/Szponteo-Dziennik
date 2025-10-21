@@ -18,6 +18,7 @@ dayjs.locale('pl')
 
 const AttendanceList = () => {
   const [selectedDay, setSelectedDay] = useState(dayjs().format('DD.MM'))
+  const [scrollEnabled, setScrollEnabled] = useState(true)
 
   const formattedDate = dayjs(selectedDay, 'DD.MM', true).format('YYYY-MM-DD')
   const { attendance, isLoading, isError } = useAttendance(formattedDate)
@@ -25,8 +26,13 @@ const AttendanceList = () => {
   if (isError) return <ErrorMessage />
 
   return (
-    <ScrollView>
-      <WeekNavigator selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+    <ScrollView scrollEnabled={scrollEnabled}>
+      <WeekNavigator
+        selectedDay={selectedDay}
+        setSelectedDay={setSelectedDay}
+        onGestureStart={() => setScrollEnabled(false)}
+        onGestureEnd={() => setScrollEnabled(true)}
+      />
       {isLoading ? (
         <LoadingScreen />
       ) : (
