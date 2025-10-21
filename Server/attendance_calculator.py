@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from vulcan import Vulcan
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any
 import unicodedata
 
 TARGET_PERIOD_NUMBER: int = 1 
@@ -14,7 +14,7 @@ def normalize_string(s: str) -> str:
         return ''
     return unicodedata.normalize('NFC', s).strip().lower()
 
-def _calculate_attendance(attendance_records: List[Dict[str, Any]], subject_name: str) -> float:
+def _calculate_attendance(attendance_records: List[Dict[str, Any]], subject_name: str):
     attended_lessons = 0
     total_lessons = 0
     subject_name_norm = normalize_string(subject_name)
@@ -56,20 +56,13 @@ def to_python_date(d) -> date:
         if isinstance(val, date):
             return val
 
-async def fetch_attendance_data(client: Vulcan, period_number: int) -> Tuple[List[Dict[str, Any]], date, date]:
+async def fetch_attendance_data(client: Vulcan, period_number: int):
 
     student_list = await client.get_students()
-    if not student_list:
-        raise Exception("Lista studentów jest pusta po uwierzytelnieniu.")
     
     student = student_list[0]
-
-    if not hasattr(student, 'periods') or not student.periods:
-        raise Exception("Brak okresów klasyfikacyjnych dla ucznia.")
     
     target_period = next((p for p in student.periods if p.number == period_number), None)
-    if target_period is None:
-        raise Exception(f"Brak okresu klasyfikacyjnego numer {period_number}.")
 
     date_from_obj = to_python_date(target_period.start)
     date_to_obj = to_python_date(target_period.end)

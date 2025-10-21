@@ -1,77 +1,30 @@
-import { useNavigation } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import {View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, FlatList } from 'react-native';
-import Constants from 'expo-constants';
-
-const HOST_IP = Constants.expoConfig?.hostUri?.split(':')[0] || 'localhost';
-const API_URL = `http://${HOST_IP}:8000/api/frekwencja`;
-interface FrekwencjaData {
-  subject: string;
-  period_number: number;
-  attendance_percentage: number;
-  period_start: string;
-  period_end: string;
-  available_subjects?: string[];
-}
+import { useNavigation } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList } from 'react-native'
+import { useAttendanceSummary } from '@/hooks/useAttendanceSummary'
+import LoadingScreen from '@/components/LoadingScreen'
+import ErrorMessage from '@/components/ErrorMessage'
 
 const AttendanceSummary = () => {
-  const [data, setData] = useState<FrekwencjaData | null>(null);
-  const [isLoading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedSubject, setSelectedSubject] = useState<string>('all');
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const navigation = useNavigation();
+  const [selectedSubject, setSelectedSubject] = useState<string>('all')
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
+  const navigation = useNavigation()
+
+  const { attendanceSummary, isLoading, isError } = useAttendanceSummary(selectedSubject)
 
   useEffect(() => {
     navigation?.setOptions({
-      title: 'Frekwencja ucznia ',
-    });
-  }, [navigation]);
+      title: 'Frekwencja ucznia '
+    })
+  }, [navigation])
 
-  const fetchData = async (subject: string = 'all') => {
-    setLoading(true);
-    setError(null);
+  if (isError) return <ErrorMessage />
 
-    try {
-      const response = await fetch(`${API_URL}?subject=${encodeURIComponent(subject)}`);
-      if (!response.ok) throw new Error(`Błąd serwera: ${response.status}`);
-      const json: FrekwencjaData = await response.json();
-      setData(json);
-    } catch (e) {
-      setError(`Nie udało się pobrać danych: ${(e as Error).message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData(selectedSubject);
-  }, [selectedSubject]);
-
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#007bff" />
-        <Text style={styles.text}>Pobieranie danych...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Błąd</Text>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
+  if (isLoading) return <LoadingScreen />
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.subjectSelectButton}
-        onPress={() => setModalVisible(true)}
-      >
+      <TouchableOpacity style={styles.subjectSelectButton} onPress={() => setModalVisible(true)}>
         <Text style={styles.subjectSelectText}>
           {selectedSubject === 'all' ? 'Wszystkie przedmioty' : selectedSubject}
         </Text>
@@ -88,23 +41,20 @@ const AttendanceSummary = () => {
             <Text style={styles.modalTitle}>Wybierz przedmiot</Text>
 
             <FlatList
-              data={['all', ...(data?.available_subjects || [])]}
+              data={['all', ...(attendanceSummary?.available_subjects || [])]}
               keyExtractor={(item) => item}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  style={[
-                    styles.modalItem,
-                    item === selectedSubject && styles.modalItemSelected,
-                  ]}
+                  style={[styles.modalItem, item === selectedSubject && styles.modalItemSelected]}
                   onPress={() => {
-                    setSelectedSubject(item);
-                    setModalVisible(false);
+                    setSelectedSubject(item)
+                    setModalVisible(false)
                   }}
                 >
                   <Text
                     style={[
                       styles.modalItemText,
-                      item === selectedSubject && styles.modalItemTextSelected,
+                      item === selectedSubject && styles.modalItemTextSelected
                     ]}
                   >
                     {item === 'all' ? 'Wszystkie' : item}
@@ -125,15 +75,15 @@ const AttendanceSummary = () => {
 
       <Text style={styles.title}>Frekwencja Semestralna</Text>
       <Text style={styles.detail}>
-        Przedmiot: {data?.subject} (Semestr {data?.period_number})
+        Przedmiot: {attendanceSummary?.subject} (Semestr {attendanceSummary?.period_number})
       </Text>
-      <Text style={styles.percentage}>{data?.attendance_percentage}%</Text>
+      <Text style={styles.percentage}>{attendanceSummary?.attendance_percentage}%</Text>
       <Text style={styles.detailSmall}>
-        Okres: {data?.period_start} – {data?.period_end}
+        Okres: {attendanceSummary?.period_start} – {attendanceSummary?.period_end}
       </Text>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -141,92 +91,92 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   },
   subjectSelectButton: {
     backgroundColor: '#007bff',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
-    marginBottom: 20,
+    marginBottom: 20
   },
   subjectSelectText: {
     color: '#fff',
-    fontWeight: '600',
+    fontWeight: '600'
   },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   modalContent: {
     backgroundColor: '#fff',
     borderRadius: 20,
     width: '80%',
     padding: 20,
-    maxHeight: '70%',
+    maxHeight: '70%'
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: 'center'
   },
   modalItem: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#eee'
   },
   modalItemSelected: {
-    backgroundColor: '#007bff22',
+    backgroundColor: '#007bff22'
   },
   modalItemText: {
     fontSize: 16,
     color: '#333',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   modalItemTextSelected: {
     color: '#007bff',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   modalCloseButton: {
     backgroundColor: '#007bff',
     borderRadius: 15,
     marginTop: 15,
-    padding: 10,
+    padding: 10
   },
   modalCloseText: {
     color: '#fff',
     textAlign: 'center',
-    fontWeight: '600',
+    fontWeight: '600'
   },
   title: {
     fontSize: 22,
     fontWeight: '700',
-    marginBottom: 10,
+    marginBottom: 10
   },
   percentage: {
     fontSize: 60,
     fontWeight: '900',
     color: '#007bff',
-    marginVertical: 20,
+    marginVertical: 20
   },
   detail: {
     fontSize: 16,
-    color: '#555',
+    color: '#555'
   },
   detailSmall: {
     fontSize: 12,
-    color: '#777',
+    color: '#777'
   },
   errorText: {
     fontSize: 14,
-    color: 'red',
+    color: 'red'
   },
   text: {
-    marginTop: 10,
-  },
-});
+    marginTop: 10
+  }
+})
 
-export default AttendanceSummary;
+export default AttendanceSummary

@@ -30,4 +30,13 @@ interface AttendanceDay {
   value: string | null
 }
 
-export type { Subject, Lesson, AttendanceDay }
+interface AttendanceSummary {
+  subject: string
+  period_number: number
+  attendance_percentage: number
+  period_start: string
+  period_end: string
+  available_subjects?: string[]
+}
+
+export type { Subject, Lesson, AttendanceDay, AttendanceSummary }
