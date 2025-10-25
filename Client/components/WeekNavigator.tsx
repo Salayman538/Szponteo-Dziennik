@@ -138,7 +138,7 @@ const WeekNavigator = ({
                     </Text>
                     <Text
                       className={`
-                      text-sm text-center
+                      text-sm text-center text-primary font-poppins
                       ${selectedDay === item.formatted ? 'text-white' : 'text-gray-500'}
                       `}
                     >

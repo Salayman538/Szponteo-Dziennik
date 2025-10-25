@@ -1,8 +1,8 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Image } from 'react-native'
 import { Lesson } from '../types/common'
 import { Ionicons } from '@expo/vector-icons'
-import { FontAwesome5 } from '@expo/vector-icons'
+import Teacher from '../assets/icons/Teacher.svg'
 
 interface LessonCardProps {
   lesson: Lesson
@@ -49,10 +49,12 @@ const LessonCard = ({ lesson }: LessonCardProps) => {
               <>
                 <Ionicons name="location-outline" size={16} color="#4B5563" className="ml-3" />
                 <Text className="text-sm text-gray-600 ml-1">Sala {lesson.room}</Text>
-                <FontAwesome5 name="user" size={16} color="#4B5563" className="ml-5" />
-                <Text className="text-sm text-gray-700 ml-3">
-                  {teacherName[0].substring(0, 1)}. {teacherName[1].substring(0, 1)}
-                </Text>
+                <View className='ml-2 flex flex-row'>
+                  <Teacher width={16} height={16} color="#4B5563" />
+                  <Text className="text-sm text-gray-700 ml-1">
+                    {teacherName[0].substring(0, 1)}. {teacherName[1].substring(0, 1)}
+                  </Text>
+                </View>
               </>
             ) : (
               ''
