@@ -109,3 +109,32 @@ async def get_semester_attendance(subject: str = "all"):
 
     except Exception as e:
         return {"get-attendance/summary error": str(e)}
+
+@app.get("/api/get-homework")
+async def get_homework():
+    homework_list = [
+        {
+            'content': homework.content,
+            'subject': homework.subject.name,
+            'deadline': homework.deadline.date
+        }
+        async for homework in await client.data.get_homework()
+    ]
+
+    return homework_list
+
+@app.get("/api/get-exams")
+async def get_exams():
+    exams_list = [
+        {
+            'type': exam.type,
+            'topic': exam.topic,
+            'subject': exam.subject.name,
+            'date_created': exam.date_created.date,
+            'deadline': exam.deadline.date
+
+        }
+        async for exam in await client.data.get_exams()
+    ]
+
+    return exams_list

@@ -39,4 +39,18 @@ interface AttendanceSummary {
   available_subjects?: string[]
 }
 
-export type { Subject, Lesson, AttendanceDay, AttendanceSummary }
+interface Exam {
+  type: string
+  topic: string
+  subject: string
+  date_created: string
+  deadline: string
+}
+
+interface Homework {
+  content: string
+  subject: string
+  deadline: string
+}
+
+export type { Subject, Lesson, AttendanceDay, AttendanceSummary, Exam, Homework }

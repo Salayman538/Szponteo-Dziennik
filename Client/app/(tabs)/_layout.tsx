@@ -9,39 +9,44 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: '#155dfc',
         tabBarInactiveTintColor: 'gray',
-        headerShown: false, // Opcjonalnie: ukryj nagłówki ekranów
+        headerShown: false // Opcjonalnie: ukryj nagłówki ekranów
       }}
     >
       <Tabs.Screen
         name="index" // Odpowiada plikowi app/(tabs)/index.tsx (Plan Lekcji)
         options={{
           title: 'Plan Lekcji',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="calendar" size={size} color={color} />
         }}
       />
       <Tabs.Screen
         name="grades" // Odpowiada plikowi app/(tabs)/grades.tsx (Oceny)
         options={{
           title: 'Oceny',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="medal" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="medal" size={size} color={color} />
         }}
       />
       <Tabs.Screen
         name="attendance" // Odpowiada plikowi app/(tabs)/attendance.tsx (Frekwencja)
         options={{
           title: 'Frekwencja',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="stats-chart" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={size} color={color} />
         }}
       />
-      {/* Możesz dodać ukryty ekran, np. dla modala, który ma nie mieć zakładki.
-        <Tabs.Screen name="modal" options={{ headerShown: false, href: null }} />
-      */}
+      <Tabs.Screen
+        name="exams"
+        options={{
+          title: 'Sprawdziany',
+          tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={size} color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name="homework"
+        options={{
+          title: 'Prace domowe',
+          tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={size} color={color} />
+        }}
+      />
     </Tabs>
   )
 }
