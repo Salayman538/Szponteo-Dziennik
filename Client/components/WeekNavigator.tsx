@@ -29,7 +29,8 @@ const getWeekDays = (weekOffset: number) => {
   return Array.from({ length: 5 }, (_, i) => ({
     date: startOfWeek.add(i, 'day'),
     formatted: startOfWeek.add(i, 'day').format('DD.MM'),
-    dayName: startOfWeek.add(i, 'day').format('dd')
+    dayName: startOfWeek.add(i, 'day').format('dd'),
+    monthName: startOfWeek.add(i, 'day').format('MM')
   }))
 }
 
@@ -82,6 +83,20 @@ const WeekNavigator = ({
   }))
 
   const weekDays = getWeekDays(weekOffset)
+  const months = [
+    'Styczeń',
+    'Luty',
+    'Marzec',
+    'Kwiecień',
+    'Maj',
+    'Czerwiec',
+    'Lipiec',
+    'Sierpień',
+    'Wrzesień',
+    'Październik',
+    'Listopad',
+    'Grudzień'
+  ]
 
   return (
     <GestureHandlerRootView>
@@ -120,6 +135,14 @@ const WeekNavigator = ({
                       ]}
                     >
                       {item.formatted.split('.')[0]}
+                    </Text>
+                    <Text
+                      className={`
+                      text-sm text-center
+                      ${selectedDay === item.formatted ? 'text-white' : 'text-gray-500'}
+                      `}
+                    >
+                      {months[parseInt(item.monthName) - 1].substring(0, 3)}
                     </Text>
                   </View>
                   {selectedDay === item.formatted && <View style={styles.selectedIndicator} />}
