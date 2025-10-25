@@ -21,7 +21,8 @@ const getWeekDays = (weekOffset: number) => {
   return Array.from({ length: 5 }, (_, i) => ({
     date: startOfWeek.add(i, 'day'),
     formatted: startOfWeek.add(i, 'day').format('DD.MM'),
-    dayName: startOfWeek.add(i, 'day').format('dd')
+    dayName: startOfWeek.add(i, 'day').format('dd'),
+    monthName: startOfWeek.add(i, 'day').format('MM')
   }))
 }
 
@@ -63,6 +64,7 @@ const WeekNavigator = ({ selectedDay, setSelectedDay }: weekNavigatorProps) => {
   }))
 
   const weekDays = getWeekDays(weekOffset)
+  const months = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień']
 
   return (
     <Animated.View style={animatedStyle} className="flex items-center mb-5">
@@ -80,7 +82,7 @@ const WeekNavigator = ({ selectedDay, setSelectedDay }: weekNavigatorProps) => {
                 <View className="items-center mx-2 h-20">
                   <View
                     className={`
-                  px-5 py-3 rounded-2xl
+                  px-5 py-1 rounded-2xl
                   ${selectedDay === item.formatted ? 'bg-blue-600 border border-blue-600' : 'bg-gray-200 border border-blue-600'}
                 `}
                   >
@@ -99,6 +101,12 @@ const WeekNavigator = ({ selectedDay, setSelectedDay }: weekNavigatorProps) => {
                   `}
                     >
                       {item.formatted.split('.')[0]}
+                    </Text>
+                    <Text className={`
+                      text-sm text-center
+                      ${selectedDay === item.formatted ? 'text-white' : 'text-gray-500'}
+                      `}>
+                      {months[parseInt(item.monthName) - 1].substring(0, 3)}
                     </Text>
                   </View>
 
