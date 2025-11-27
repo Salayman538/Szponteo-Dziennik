@@ -19,6 +19,7 @@ interface Lesson {
   room: string
   teacher: string
   changes_id: number | null
+  status?: string
   note?: string
 }
 
@@ -41,9 +42,8 @@ interface AttendanceSummary {
 
 interface Exam {
   type: string
-  topic: string
+  content: string
   subject: string
-  date_created: string
   deadline: string
 }
 
