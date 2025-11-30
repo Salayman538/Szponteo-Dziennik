@@ -1,66 +1,72 @@
 import React from 'react'
-import { View, Text, Image } from 'react-native'
+import { View, Text } from 'react-native'
 import { Lesson } from '../types/common'
-import { Ionicons } from '@expo/vector-icons'
 import Teacher from '../assets/icons/Teacher.svg'
+import MapMarker from '../assets/icons/map-marker-alt.svg'
 
 interface LessonCardProps {
   lesson: Lesson
 }
 
 const LessonCard = ({ lesson }: LessonCardProps) => {
-  const isChanged = lesson.changes_id
-  const teacherName = lesson.teacher ? lesson.teacher.split(' ') : ''
-
+  const isCanceled = lesson.status === 'Odwołana'
+  const isSubstituted = lesson.status !== undefined && lesson.status !== 'Odwołana'
+  const ltime = lesson.time.split('-')
   return (
-    <View
-      className={`
-      m-2 p-5 rounded-xl shadow-md
-      ${isChanged ? (lesson.teacher ? 'bg-yellow-50' : 'bg-red-50') : 'bg-white'}
-    `}
-    >
-      <View className="flex-row items-center">
-        <View
-          className={`
-          w-12 h-12 rounded-full flex items-center justify-center mr-4
-          ${isChanged ? (lesson.teacher ? 'bg-yellow-600' : 'bg-red-600') : 'bg-blue-600'}
-        `}
-        >
-          <Text
-            className={`
-            text-2xl font-bold text-white
-          `}
-          >
-            {lesson.position}
-          </Text>
-        </View>
-        <View className="flex-1">
-          <View className="flex-row items-center">
-            <Text className="text-lg font-semibold text-gray-800">{lesson.name}</Text>
-            <Text className="text-m text-gray-600 ml-3 mt-1">
-              {isChanged && lesson.teacher ? `${lesson.teacher}` : ''}
-            </Text>
-          </View>
-          <View className="flex-row items-center my-1">
-            <Ionicons name="time-outline" size={16} color="#4B5563" />
-            <Text className="text-sm text-gray-600 ml-1">{lesson.time}</Text>
+    <View className={`p-2 border-b-[1px] border-whiteGray flex-row justify-between pb-[10px] mt-[5px]`}>
+      <View className={`w-[25%]`}>
+        <Text className='text-[18px] font-poppinsMedium text-black'>{ltime[0]}</Text>
+        <Text className='text-[16px] font-poppinsMedium text-darkGray'>{ltime[1]}</Text>
+      </View>
+      <View className={`w-[77.5%]`}>
+        
+        {isSubstituted ? (
+          <View>
+            <View className='bg-blueGray rounded-t-3xl pt-[10px] pb-[10px] pl-[12px] pr-[12px]'>
+            <Text className='font-poppinsBold text-[16px] text-black'>{lesson.status}</Text>
+              <View className='flex-row mt-[5px] mb-[5px]'>
+                <MapMarker width={18} height={18} />
+                <Text className='ml-[5px] font-poppins text-[14px] text-black'>Sala {lesson.room}</Text>
+              </View>
+                {lesson.teacher ? (
+                    <View className='flex-row'>
+                      <Teacher width={18} height={18} />
+                      <Text className='ml-[5px] font-poppins text-[14px] text-black'>{lesson.teacher}</Text>
+                    </View>
 
-            {lesson.teacher ? (
-              <>
-                <Ionicons name="location-outline" size={16} color="#4B5563" className="ml-3" />
-                <Text className="text-sm text-gray-600 ml-1">Sala {lesson.room}</Text>
-                <View className='ml-2 flex flex-row'>
-                  <Teacher width={16} height={16} color="#4B5563" />
-                  <Text className="text-sm text-gray-700 ml-1">
-                    {teacherName[0].substring(0, 1)}. {teacherName[1].substring(0, 1)}
-                  </Text>
-                </View>
-              </>
-            ) : (
-              ''
-            )}
+                  ): ""}
           </View>
+                    <View className='bg-primary rounded-b-3xl h-[25px] flex justify-center'>
+                      <Text className='ml-[20px] font-poppinsMedium text-[12px] text-white'>Zastępstwo</Text>
+                    </View>
+          </View>
+        ): isCanceled ? (
+          <View>
+            <View className='bg-blueGray rounded-t-3xl pt-[10px] pb-[10px] pl-[12px] pr-[12px]'>
+              <Text className='font-poppinsBold text-[16px] text-black line-through'>{lesson.name}</Text>
+            </View>
+
+            <View className='bg-primary rounded-b-3xl h-[25px] flex justify-center'>
+              <Text className='ml-[20px] font-poppinsMedium text-[12px] text-white'>{lesson.status}</Text>
+            </View>
+          </View>
+        ) : (
+          <View>
+            <View className='bg-blueGray rounded-3xl pt-[10px] pb-[10px] pl-[12px] pr-[12px]'>
+                <Text className='font-poppinsBold text-[16px] text-black'>{lesson.name}</Text>
+              <View className='flex-row mt-[5px] mb-[5px]'>
+                <MapMarker width={18} height={18} />
+                <Text className='ml-[5px] font-poppins text-[14px] text-black'>Sala {lesson.room}</Text>
+              </View>
+            {lesson.teacher ? (
+              <View className='flex-row'>
+              <Teacher width={18} height={18} />
+            <Text className='ml-[5px] font-poppins text-[14px] text-black'>{lesson.teacher}</Text>
         </View>
+        ):"" }
+            </View>
+        </View>
+          )}
       </View>
     </View>
   )

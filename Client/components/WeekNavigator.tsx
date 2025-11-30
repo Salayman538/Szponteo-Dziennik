@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View, Text, Pressable, Dimensions, StyleSheet } from 'react-native'
+import { View, Text, Pressable, Dimensions} from 'react-native'
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pl'
@@ -25,13 +25,17 @@ const getWeekDays = (weekOffset: number) => {
   if (startOfWeek.day() !== 1) {
     startOfWeek = startOfWeek.day(1)
   }
+  const daysOfWeek = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz'];
 
-  return Array.from({ length: 5 }, (_, i) => ({
+  return Array.from({ length: 7 }, (_, i) => {
+    const date = startOfWeek.add(i, 'day');
+    return {
     date: startOfWeek.add(i, 'day'),
     formatted: startOfWeek.add(i, 'day').format('DD.MM'),
-    dayName: startOfWeek.add(i, 'day').format('dd'),
+    dayName: daysOfWeek[i],
     monthName: startOfWeek.add(i, 'day').format('MM')
-  }))
+    }
+  })
 }
 
 interface WeekNavigatorProps {
@@ -83,70 +87,45 @@ const WeekNavigator = ({
   }))
 
   const weekDays = getWeekDays(weekOffset)
-  const months = [
-    'Styczeń',
-    'Luty',
-    'Marzec',
-    'Kwiecień',
-    'Maj',
-    'Czerwiec',
-    'Lipiec',
-    'Sierpień',
-    'Wrzesień',
-    'Październik',
-    'Listopad',
-    'Grudzień'
-  ]
 
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={gesture}>
-        <Animated.View style={[animatedStyle, styles.container]}>
-          <View style={styles.daysWrapper}>
+        <Animated.View className={'w-[90%] flex-row justify-between self-center rounded-2xl bg-blueGray h-[80px] mb-[16px]'} style={animatedStyle}>
+          <View 
+          className='flex-row justify-center w-[100%] items-center'
+          >
             {weekDays.map((item) => (
               <Pressable
                 key={item.formatted}
                 onPress={() => setSelectedDay(item.formatted)}
                 style={({ pressed }) => [pressed && { opacity: 0.7 }]}
               >
-                <View style={styles.dayInnerContainer}>
+                <View 
+                className='justify-center items-center h-[80px] m-[1.5px] rounded-xl'
+                >
                   <View
-                    style={[
-                      styles.dayCircle,
-                      selectedDay === item.formatted
-                        ? styles.selectedDayCircle
-                        : styles.unselectedDayCircle
-                    ]}
+                    className={`flex justify-center items-center w-12 rounded-[18px] h-[55px]
+                    ${selectedDay === item.formatted ? 'bg-primary' : 'bg-blueGray'}
+                    `}
                   >
                     <Text
-                      style={[
-                        styles.dayNameText,
-                        selectedDay === item.formatted ? styles.selectedText : styles.unselectedText
-                      ]}
+                      className={`text-[12px] font-poppinsLight
+                        ${selectedDay === item.formatted ? 'text-white' : 'text-black'}
+                        `}
                     >
                       {item.dayName}
                     </Text>
-                    <Text
-                      style={[
-                        styles.dayNumberText,
-                        selectedDay === item.formatted
-                          ? styles.selectedText
-                          : styles.dayNumberUnselectedText
-                      ]}
+                    <Text                      
+                      className={` text-[18px] font-bold
+                        ${selectedDay === item.formatted ? 'text-white' : 'text-black'}
+                        `}
+                        
                     >
-                      {item.formatted.split('.')[0]}
-                    </Text>
-                    <Text
-                      className={`
-                      text-sm text-center text-primary font-poppins
-                      ${selectedDay === item.formatted ? 'text-white' : 'text-gray-500'}
-                      `}
-                    >
-                      {months[parseInt(item.monthName) - 1].substring(0, 3)}
+                      { item.formatted.split('.')[0][0] === '0' ? item.formatted.split('.')[0][1] : item.formatted.split('.')[0]}
                     </Text>
                   </View>
-                  {selectedDay === item.formatted && <View style={styles.selectedIndicator} />}
-                </View>
+              </View>
               </Pressable>
             ))}
           </View>
@@ -155,64 +134,5 @@ const WeekNavigator = ({
     </GestureHandlerRootView>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    marginBottom: 20,
-    width: screenWidth
-  },
-  daysWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%'
-  },
-  dayInnerContainer: {
-    alignItems: 'center',
-    marginHorizontal: 8,
-    height: 80
-  },
-  dayCircle: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 16,
-    borderWidth: 1,
-    alignItems: 'center'
-  },
-  selectedDayCircle: {
-    backgroundColor: '#2563EB',
-    borderColor: '#2563EB'
-  },
-  unselectedDayCircle: {
-    backgroundColor: '#E5E7EB',
-    borderColor: '#2563EB'
-  },
-  dayNameText: {
-    fontSize: 12,
-    fontWeight: '500',
-    textTransform: 'uppercase'
-  },
-  dayNumberText: {
-    fontSize: 20,
-    fontWeight: '700',
-    textAlign: 'center'
-  },
-  selectedText: {
-    color: 'white'
-  },
-  unselectedText: {
-    color: '#6B7280'
-  },
-  dayNumberUnselectedText: {
-    color: '#1F2937'
-  },
-  selectedIndicator: {
-    width: 20,
-    height: 4,
-    backgroundColor: '#60A5FA',
-    borderRadius: 9999,
-    marginTop: 8
-  }
-})
 
 export default WeekNavigator
