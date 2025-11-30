@@ -4,9 +4,10 @@ import GradesList from '../../components/GradesList' // Zaktualizowana ścieżka
 
 const GradesView = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <GradesList />
-    </SafeAreaView>
+    <GradesList />
+    // <SafeAreaView style={{ flex: 1 }}>
+    //   <GradesList />
+    // </SafeAreaView>
   )
 }
 

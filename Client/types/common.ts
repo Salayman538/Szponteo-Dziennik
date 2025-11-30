@@ -19,6 +19,7 @@ interface Lesson {
   room: string
   teacher: string
   changes_id: number | null
+  status?: string
   note?: string
 }
 

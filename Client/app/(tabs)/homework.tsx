@@ -7,8 +7,7 @@ const HomeworkView = () => {
   const { homework, isLoading, isError } = useHomework()
 
   return (
-    <SafeAreaView style={{ flex: 1, padding: 16 }}>
-      <ScrollView>
+    <ScrollView>
         {homework?.map((item, index) => (
           <View key={index} style={{ marginBottom: 12 }}>
             <Text>{item.subject}</Text>
@@ -17,7 +16,18 @@ const HomeworkView = () => {
           </View>
         ))}
       </ScrollView>
-    </SafeAreaView>
+      
+    // <SafeAreaView style={{ flex: 1, padding: 16 }}>
+    //   <ScrollView>
+    //     {homework?.map((item, index) => (
+    //       <View key={index} style={{ marginBottom: 12 }}>
+    //         <Text>{item.subject}</Text>
+    //         <Text>{item.content}</Text>
+    //         <Text>Dzień w który to jest: {item.deadline}</Text>
+    //       </View>
+    //     ))}
+    //   </ScrollView>
+    // </SafeAreaView>
   )
 }
 

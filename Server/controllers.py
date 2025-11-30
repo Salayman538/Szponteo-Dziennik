@@ -53,7 +53,7 @@ async def get_week_lessons(client, date_from, date_to):
             {
                 'id': lesson.id,
                 'note': lesson.note,
-                'name': "Odwołana" if not lesson.teacher else (lesson.subject.name if lesson.subject else "Zastępstwo"),
+                'status': "Odwołana" if not lesson.teacher else (lesson.subject.name if lesson.subject else "Zastępstwo"),
                 'teacher': lesson.teacher.display_name if lesson.teacher else None
             }
             async for lesson in await client.data.get_changed_lessons(date_from=date_from, date_to=date_to)
@@ -82,8 +82,8 @@ async def get_week_lessons(client, date_from, date_to):
             for lesson in day:
                 if lesson['changes_id'] in changes_map:
                     change = changes_map[lesson['changes_id']]
-                    lesson['name'] = change['name']
                     lesson['teacher'] = change['teacher']
+                    lesson['status'] = change['status']
                     lesson['note'] = change['note']
 
         return lessons
