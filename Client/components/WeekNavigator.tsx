@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View, Text, Pressable, Dimensions} from 'react-native'
+import { View, Text, Pressable, Dimensions } from 'react-native'
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pl'
@@ -25,15 +25,16 @@ const getWeekDays = (weekOffset: number) => {
   if (startOfWeek.day() !== 1) {
     startOfWeek = startOfWeek.day(1)
   }
-  const daysOfWeek = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz'];
+  const daysOfWeek = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz']
 
   return Array.from({ length: 7 }, (_, i) => {
-    const date = startOfWeek.add(i, 'day');
+    const dateObj = startOfWeek.add(i, 'day')
     return {
-    date: startOfWeek.add(i, 'day'),
-    formatted: startOfWeek.add(i, 'day').format('DD.MM'),
-    dayName: daysOfWeek[i],
-    monthName: startOfWeek.add(i, 'day').format('MM')
+      date: dateObj,
+      fullDate: dateObj.format('YYYY-MM-DD'),
+      formatted: dateObj.format('DD.MM'),
+      dayName: dateObj.format('dd'),
+      monthName: dateObj.format('MM')
     }
   })
 }
@@ -91,41 +92,43 @@ const WeekNavigator = ({
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={gesture}>
-        <Animated.View className={'w-[90%] flex-row justify-between self-center rounded-2xl bg-blueGray h-[80px] mb-[16px]'} style={animatedStyle}>
-          <View 
-          className='flex-row justify-center w-[100%] items-center'
-          >
+        <Animated.View
+          className={
+            'w-[90%] flex-row justify-between self-center rounded-2xl bg-blueGray h-[80px] mb-[16px]'
+          }
+          style={animatedStyle}
+        >
+          <View className="flex-row justify-center w-[100%] items-center">
             {weekDays.map((item) => (
               <Pressable
-                key={item.formatted}
-                onPress={() => setSelectedDay(item.formatted)}
+                key={item.fullDate} // Użyj pełnej daty jako klucza
+                onPress={() => setSelectedDay(item.fullDate)} // Przekazuj pełną datę do nadrzędnego komponentu
                 style={({ pressed }) => [pressed && { opacity: 0.7 }]}
               >
-                <View 
-                className='justify-center items-center h-[80px] m-[1.5px] rounded-xl'
-                >
+                <View className="justify-center items-center h-[80px] m-[1.5px] rounded-xl">
                   <View
                     className={`flex justify-center items-center w-12 rounded-[18px] h-[55px]
-                    ${selectedDay === item.formatted ? 'bg-primary' : 'bg-blueGray'}
+                    ${selectedDay === item.fullDate ? 'bg-primary' : 'bg-blueGray'}
                     `}
                   >
                     <Text
                       className={`text-[12px] font-poppinsLight
-                        ${selectedDay === item.formatted ? 'text-white' : 'text-black'}
+                        ${selectedDay === item.fullDate ? 'text-white' : 'text-black'}
                         `}
                     >
                       {item.dayName}
                     </Text>
-                    <Text                      
+                    <Text
                       className={` text-[18px] font-bold
-                        ${selectedDay === item.formatted ? 'text-white' : 'text-black'}
+                        ${selectedDay === item.fullDate ? 'text-white' : 'text-black'}
                         `}
-                        
                     >
-                      { item.formatted.split('.')[0][0] === '0' ? item.formatted.split('.')[0][1] : item.formatted.split('.')[0]}
+                      {item.fullDate.split('.')[0][0] === '0'
+                        ? item.fullDate.split('.')[0][1]
+                        : item.fullDate.split('.')[0]}
                     </Text>
                   </View>
-              </View>
+                </View>
               </Pressable>
             ))}
           </View>

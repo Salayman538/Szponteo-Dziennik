@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Button, ScrollView, View } from 'react-native'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { View } from 'react-native'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pl'
 import { useAttendance } from '../hooks/useAttendance'
@@ -9,29 +9,32 @@ import LoadingScreen from './LoadingScreen'
 import ErrorMessage from './ErrorMessage'
 import { AttendanceDay } from '../types/common'
 import { Text } from 'react-native-gesture-handler'
-import Entypo from '@expo/vector-icons/Entypo'
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
-import { router } from 'expo-router'
 
 import Sad from '../assets/icons/Sad.svg'
 import Neutral from '../assets/icons/neutral.svg'
 import Happy from '../assets/icons/happy.svg'
 import Clock from '../assets/icons/Clock.svg'
-import Calendar from '../assets/icons/Calendar.svg'
 
 dayjs.locale('pl')
 
-const AttendanceList = () => {
+const AttendanceWeekly = ({
+  setScrollEnabled
+}: {
+  setScrollEnabled: Dispatch<SetStateAction<boolean>>
+}) => {
   const [selectedDay, setSelectedDay] = useState(dayjs().format('YYYY-MM-DD'))
-  const [scrollEnabled, setScrollEnabled] = useState(true)
 
   const formattedDate = selectedDay
   const { attendance, isLoading, isError } = useAttendance(formattedDate)
 
+  useEffect(() => {
+    console.log(attendance)
+  }, [attendance])
+
   if (isError) return <ErrorMessage />
 
   return (
-    <ScrollView scrollEnabled={scrollEnabled} className="font-poppins p-[20px]">
+    <View className="font-poppins flex-col gap-[12px] p-[20px]">
       <WeekNavigator
         selectedDay={selectedDay}
         setSelectedDay={setSelectedDay}
@@ -51,16 +54,8 @@ const AttendanceList = () => {
           )}
         </View>
       )}
-      <View className="flex m-auto mb-5">
-        <Button
-          title="Statystyki Frekwencji"
-          onPress={() => {
-            router.push('/AttendanceSummary')
-          }}
-        />
-      </View>
-      <View className="flex-col justify-center bg-gray-200 opacity-80 w-96 m-auto pb-10 rounded-lg gap-y-2">
-        <Text className="font-[500] text-[18px] p-5">Legenda</Text>
+      <View className="flex-col mt-[20px] gap-y-2">
+        <Text className="font-[500] text-[18px] font-poppinsBold">Legenda</Text>
 
         <View className="flex justify-around flex-row flex-wrap">
           <View className="flex flex-row items-center gap-[7px]">
@@ -93,7 +88,7 @@ const AttendanceList = () => {
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
   )
 }
-export default AttendanceList
+export default AttendanceWeekly
