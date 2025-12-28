@@ -35,7 +35,27 @@ async def lifespan(app: FastAPI):
         await client.close()
 
 # Inicjalizacja aplikacji z context managerem
+from fastapi.middleware.cors import CORSMiddleware
+
+# ... (app initialization)
 app = FastAPI(lifespan=lifespan)
+
+# Define allowed origins
+# For development, you can use ["*"] to allow everything, 
+# but it's better to list your specific frontend URLs
+origins = [
+    "http://localhost:3000",      # Common React/Next.js port
+    "http://127.0.0.1:3000",
+    "http://192.168.1.39:3000",   # If accessing from another device
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Use origins list instead of ["*"] for better security
+    allow_credentials=True,
+    allow_methods=["*"], # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"], # Allows all headers
+)
     
 # OCENY
 
