@@ -26,12 +26,16 @@ const getWeekDays = (weekOffset: number) => {
     startOfWeek = startOfWeek.day(1)
   }
 
-  return Array.from({ length: 5 }, (_, i) => ({
-    date: startOfWeek.add(i, 'day'),
-    formatted: startOfWeek.add(i, 'day').format('DD.MM'),
-    dayName: startOfWeek.add(i, 'day').format('dd'),
-    monthName: startOfWeek.add(i, 'day').format('MM')
-  }))
+  return Array.from({ length: 5 }, (_, i) => {
+    const dateObj = startOfWeek.add(i, 'day')
+    return {
+      date: dateObj,
+      fullDate: dateObj.format('YYYY-MM-DD'),
+      formatted: dateObj.format('DD.MM'),
+      dayName: dateObj.format('dd'),
+      monthName: dateObj.format('MM')
+    }
+  })
 }
 
 interface WeekNavigatorProps {
@@ -105,15 +109,15 @@ const WeekNavigator = ({
           <View style={styles.daysWrapper}>
             {weekDays.map((item) => (
               <Pressable
-                key={item.formatted}
-                onPress={() => setSelectedDay(item.formatted)}
+                key={item.fullDate} // Użyj pełnej daty jako klucza
+                onPress={() => setSelectedDay(item.fullDate)} // Przekazuj pełną datę do nadrzędnego komponentu
                 style={({ pressed }) => [pressed && { opacity: 0.7 }]}
               >
                 <View style={styles.dayInnerContainer}>
                   <View
                     style={[
                       styles.dayCircle,
-                      selectedDay === item.formatted
+                      selectedDay === item.fullDate // Porównuj pełne daty YYYY-MM-DD
                         ? styles.selectedDayCircle
                         : styles.unselectedDayCircle
                     ]}
@@ -121,7 +125,7 @@ const WeekNavigator = ({
                     <Text
                       style={[
                         styles.dayNameText,
-                        selectedDay === item.formatted ? styles.selectedText : styles.unselectedText
+                        selectedDay === item.fullDate ? styles.selectedText : styles.unselectedText
                       ]}
                     >
                       {item.dayName}
@@ -129,7 +133,7 @@ const WeekNavigator = ({
                     <Text
                       style={[
                         styles.dayNumberText,
-                        selectedDay === item.formatted
+                        selectedDay === item.fullDate
                           ? styles.selectedText
                           : styles.dayNumberUnselectedText
                       ]}
@@ -138,14 +142,14 @@ const WeekNavigator = ({
                     </Text>
                     <Text
                       className={`
-                      text-sm text-center text-primary font-poppins
-                      ${selectedDay === item.formatted ? 'text-white' : 'text-gray-500'}
-                      `}
+          text-sm text-center text-primary font-poppins
+          ${selectedDay === item.fullDate ? 'text-white' : 'text-gray-500'}
+          `}
                     >
                       {months[parseInt(item.monthName) - 1].substring(0, 3)}
                     </Text>
                   </View>
-                  {selectedDay === item.formatted && <View style={styles.selectedIndicator} />}
+                  {selectedDay === item.fullDate && <View style={styles.selectedIndicator} />}
                 </View>
               </Pressable>
             ))}

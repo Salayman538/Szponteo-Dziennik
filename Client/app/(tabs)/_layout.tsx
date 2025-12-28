@@ -2,14 +2,20 @@
 import { Tabs } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import React from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets()
+
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: '#155dfc',
         tabBarInactiveTintColor: 'gray',
-        headerShown: false // Opcjonalnie: ukryj nagłówki ekranów
+        headerShown: false, // Opcjonalnie: ukryj nagłówki ekranów
+        sceneStyle: {
+          backgroundColor: 'white'
+        }
       }}
     >
       <Tabs.Screen
