@@ -4,10 +4,14 @@ import AttendanceList from '../../components/AttendanceList' // Zaktualizowana Å
 
 const AttendanceView = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <AttendanceList />
-    </SafeAreaView>
+    <AttendanceList />
+    
+    // <SafeAreaView style={{ flex: 1 }}>
+    //   <AttendanceList />
+    // </SafeAreaView>
   )
 }
-
+AttendanceView.options = {
+  headerShown: false
+};
 export default AttendanceView
