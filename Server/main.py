@@ -120,6 +120,7 @@ async def get_homework():
         }
         async for homework in await client.data.get_homework()
     ]
+    homework_list.sort(key=lambda x: x["deadline"])
 
     return homework_list
 
@@ -128,13 +129,13 @@ async def get_exams():
     exams_list = [
         {
             'type': exam.type,
-            'topic': exam.topic,
+            'content': exam.topic,
             'subject': exam.subject.name,
-            'date_created': exam.date_created.date,
             'deadline': exam.deadline.date
 
         }
         async for exam in await client.data.get_exams()
     ]
+    exams_list.sort(key=lambda x: x["deadline"])
 
     return exams_list
