@@ -1,10 +1,10 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 import { AttendanceDay } from '../types/common'
-import AntDesign from '@expo/vector-icons/AntDesign'
-import Entypo from '@expo/vector-icons/Entypo'
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
-import { MaterialIcons } from '@expo/vector-icons'
+import Sad from '../assets/icons/Sad.svg'
+import Neutral from '../assets/icons/neutral.svg'
+import Happy from '../assets/icons/happy.svg'
+import Clock from '../assets/icons/Clock.svg'
 
 interface AttendaceCardProps {
   attendance: AttendanceDay
@@ -13,49 +13,39 @@ interface AttendaceCardProps {
 const AttendaceCard = ({ attendance }: AttendaceCardProps) => {
   const statusConfig = {
     obecność: {
-      icon: <FontAwesome5 name="smile-beam" size={24} color="#16a34a" />,
-      bg: 'bg-green-100/80',
-      border: 'border-green-200'
+      icon: <Happy width={36} height={36} strokeWidth={1.5} color="#1FA93A" />,
     },
     nieobecność: {
-      icon: <Entypo name="emoji-sad" size={24} color="#dc2626" />,
-      bg: 'bg-red-100/80',
-      border: 'border-red-200'
+      icon: <Sad width={36} height={36} strokeWidth={1.5} color="#dc2626" />,
     },
     'nieob. uspraw.': {
-      icon: <Entypo name="emoji-neutral" size={24} color="#2563eb" />,
-      bg: 'bg-blue-100/80',
-      border: 'border-blue-200'
+      icon: <Neutral width={36} height={36} strokeWidth={1.5} color="#2563eb" />,
+    },
+    spóźnienie: {
+      icon: <Clock width={36} height={36} strokeWidth={1.5} color='#FF8000'/>,
+    },
+    'spóźn. uspr.': {
+      icon: <Clock width={36} height={36} strokeWidth={1.5} color='#971ef4ff'/>,
     },
     default: {
-      icon: <AntDesign name="questioncircle" size={24} color="#4b5563" />,
-      bg: 'bg-gray-100/80',
-      border: 'border-gray-200'
+      icon: <Neutral width={36} height={36} strokeWidth={1.5} color="#4b5563" />,
     }
   }
 
   //@ts-ignore
-  const { icon, bg, border } = statusConfig[attendance.value] || statusConfig.default
+  const { icon } = statusConfig[attendance.value] || statusConfig.default
 
   return (
-    <View className={`${bg} ${border} rounded-xl p-4 mb-3 mx-4 border-l-8 shadow-sm`}>
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center flex-1">
-          <View className={`w-12 h-12 rounded-full bg-white items-center justify-center mr-4`}>
-            {icon}
-          </View>
-
+    <View className={`p-[12px] rounded-[16px] bg-blueGray flex-row gap-[8px] items-center justify-center`}>
+          {icon}
           <View className="flex-1">
-            <Text className="text-lg font-semibold text-gray-800 mb-1">{attendance.name}</Text>
+            <Text className="text-[16px] font-poppinsBold text-black">{attendance.name}</Text>
             <View className="flex-row items-center">
-              <MaterialIcons name="schedule" size={16} color="#6b7280" />
-              <Text className="text-sm text-gray-600 ml-1.5">
+              <Text className="text-[12px] text-black">
                 {attendance.position}. {attendance.time}
               </Text>
             </View>
           </View>
-        </View>
-      </View>
     </View>
   )
 }

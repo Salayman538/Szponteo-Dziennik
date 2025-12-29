@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { View, Text, FlatList, Pressable, Dimensions } from 'react-native'
+import { useEffect, useState } from 'react'
+import { View, Text, Pressable, Dimensions } from 'react-native'
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pl'
@@ -13,49 +13,73 @@ import Animated, {
 dayjs.locale('pl')
 
 const screenWidth = Dimensions.get('window').width
+const SWIPE_THRESHOLD = 20
+const DAMPING_FACTOR = 0.8
+const ANIMATION_DURATION = 150
 
 const getWeekDays = (weekOffset: number) => {
   let startOfWeek = dayjs()
     .startOf('week')
     .add(weekOffset * 7, 'day')
-  return Array.from({ length: 5 }, (_, i) => ({
-    date: startOfWeek.add(i, 'day'),
-    formatted: startOfWeek.add(i, 'day').format('DD.MM'),
-    dayName: startOfWeek.add(i, 'day').format('dd')
-  }))
+
+  if (startOfWeek.day() !== 1) {
+    startOfWeek = startOfWeek.day(1)
+  }
+
+  return Array.from({ length: 7 }, (_, i) => {
+    const dateObj = startOfWeek.add(i, 'day')
+    return {
+      date: dateObj,
+      fullDate: dateObj.format('YYYY-MM-DD'),
+      formatted: dateObj.format('DD.MM'),
+      dayName: dateObj.format('dd'),
+      monthName: dateObj.format('MM')
+    }
+  })
 }
 
-interface weekNavigatorProps {
+interface WeekNavigatorProps {
   selectedDay: string
   setSelectedDay: (value: string) => void
+  onGestureStart?: () => void
+  onGestureEnd?: () => void
 }
 
-const WeekNavigator = ({ selectedDay, setSelectedDay }: weekNavigatorProps) => {
+const WeekNavigator = ({
+  selectedDay,
+  setSelectedDay,
+  onGestureStart,
+  onGestureEnd
+}: WeekNavigatorProps) => {
   const [weekOffset, setWeekOffset] = useState(0)
-
   const translateX = useSharedValue(0)
 
   const gesture = Gesture.Pan()
+    .onBegin(() => {
+      if (onGestureStart) runOnJS(onGestureStart)()
+    })
     .onUpdate((event) => {
-      const damping = 0.4
-      translateX.value = event.translationX * damping
+      translateX.value = event.translationX * DAMPING_FACTOR
     })
     .onEnd((event) => {
-      if (event.translationX < -50) {
-        translateX.value = withTiming(-screenWidth, { duration: 120 }, () => {
+      if (event.translationX < -SWIPE_THRESHOLD) {
+        translateX.value = withTiming(-screenWidth, { duration: ANIMATION_DURATION }, () => {
           runOnJS(setWeekOffset)(weekOffset + 1)
           translateX.value = screenWidth
-          translateX.value = withTiming(0, { duration: 120 })
+          translateX.value = withTiming(0, { duration: ANIMATION_DURATION })
         })
-      } else if (event.translationX > 50) {
-        translateX.value = withTiming(screenWidth, { duration: 120 }, () => {
+      } else if (event.translationX > SWIPE_THRESHOLD) {
+        translateX.value = withTiming(screenWidth, { duration: ANIMATION_DURATION }, () => {
           runOnJS(setWeekOffset)(weekOffset - 1)
           translateX.value = -screenWidth
-          translateX.value = withTiming(0, { duration: 120 })
+          translateX.value = withTiming(0, { duration: ANIMATION_DURATION })
         })
       } else {
         translateX.value = withTiming(0)
       }
+    })
+    .onFinalize(() => {
+      if (onGestureEnd) runOnJS(onGestureEnd)()
     })
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -65,54 +89,48 @@ const WeekNavigator = ({ selectedDay, setSelectedDay }: weekNavigatorProps) => {
   const weekDays = getWeekDays(weekOffset)
 
   return (
-    <Animated.View style={animatedStyle} className="flex items-center mb-5">
-      <GestureHandlerRootView>
+    <View className="flex-row justify-center items-center p-[12px] bg-blueGray rounded-[16px] mx-[20px] overflow-hidden">
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <GestureDetector gesture={gesture}>
-          <FlatList
-            data={weekDays}
-            horizontal
-            keyExtractor={(item) => item.formatted}
-            renderItem={({ item }) => (
-              <Pressable
-                onPress={() => setSelectedDay(item.formatted)}
-                className="active:opacity-70"
-              >
-                <View className="items-center mx-2 h-20">
-                  <View
-                    className={`
-                  px-5 py-3 rounded-2xl
-                  ${selectedDay === item.formatted ? 'bg-blue-600 border border-blue-600' : 'bg-gray-200 border border-blue-600'}
-                `}
-                  >
-                    <Text
-                      className={`
-                    text-sm font-medium uppercase
-                    ${selectedDay === item.formatted ? 'text-white' : 'text-gray-500'}
-                  `}
+          <Animated.View style={animatedStyle}>
+            <View className="flex-row justify-center">
+              {weekDays.map((item) => (
+                <Pressable
+                  key={item.fullDate}
+                  onPress={() => setSelectedDay(item.fullDate)} //
+                  className="flex-1 h-full rounded-[16px] overflow-hidden"
+                >
+                  <View className="justify-center items-center rounded-xl">
+                    <View
+                      className={`flex justify-center items-center w-full py-[12px] rounded-[16px]
+                    ${selectedDay === item.fullDate ? 'bg-primary ' : 'bg-transparent'}
+                    `}
                     >
-                      {item.dayName}
-                    </Text>
-                    <Text
-                      className={`
-                    text-xl font-bold text-center
-                    ${selectedDay === item.formatted ? 'text-white' : 'text-gray-800'}
-                  `}
-                    >
-                      {item.formatted.split('.')[0]}
-                    </Text>
+                      <Text
+                        className={`text-[12px] font-poppinsLight text-black
+                        ${selectedDay === item.fullDate ? 'text-white' : 'text-black'}
+                        `}
+                      >
+                        {item.dayName}
+                      </Text>
+                      <Text
+                        className={` text-[18px] font-bold
+                        ${selectedDay === item.fullDate ? 'text-white' : 'text-black'}
+                        `}
+                      >
+                        {item.fullDate.split('-')[0][0] === '0'
+                          ? item.fullDate.split('-')[2][1]
+                          : item.fullDate.split('-')[2]}
+                      </Text>
+                    </View>
                   </View>
-
-                  {/* Selected indicator */}
-                  {selectedDay === item.formatted && (
-                    <View className="w-5 h-1 bg-blue-400 rounded-full mt-2" />
-                  )}
-                </View>
-              </Pressable>
-            )}
-          />
+                </Pressable>
+              ))}
+            </View>
+          </Animated.View>
         </GestureDetector>
       </GestureHandlerRootView>
-    </Animated.View>
+    </View>
   )
 }
 

@@ -6,6 +6,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-na
 import { useGrades } from '../hooks/useGrades'
 import LoadingScreen from './LoadingScreen'
 import ErrorMessage from './ErrorMessage'
+import Header from './Header'
 
 const GradesList = () => {
   const [isDetailsShow, setIsDetailsShow] = useState(false)
@@ -32,6 +33,11 @@ const GradesList = () => {
 
   const handleSubjectClick = (subjectName: string) => {
     setSelectedSubject(subjectName)
+    toggleIsShow()
+  }
+
+  const handleHeaderClick = () => {
+    setSelectedSubject('')
     toggleIsShow()
   }
 
@@ -66,29 +72,41 @@ const GradesList = () => {
       </ScrollView>
     )
 
+  const subtitle = `Średnia ocen — ${new Intl.NumberFormat('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(avgGrade)}`
+
   return (
-    <ScrollView className="bg-gray-100">
+    <ScrollView>
+      <Pressable onPress={() => handleHeaderClick()}>
+        <Header
+          headerData={{
+            title: 'Oceny',
+            subtitle: subtitle,
+            box: { number: 1, title: 'Semestr', subtitle: '2025' }
+          }}
+        />
+      </Pressable>
       {!isDetailsShow ? (
-        <Animated.View style={animatedStyle} className="py-6">
-          <View className="flex justify-center mx-4 mb-5">
-            <View className="bg-blue-600 flex py-4 px-6 rounded-2xl shadow-lg">
-              <Text className="text-lg text-white mb-1">Przewidywana średnia z okresu</Text>
-              <Text className="text-4xl font-bold text-white">{avgGrade}</Text>
-            </View>
-          </View>
+        <Animated.View style={animatedStyle}>
           {grades?.map((subject, index) => (
             <Pressable key={index} onPress={() => handleSubjectClick(subject.name)}>
-              <View className="bg-white mx-4 my-2 p-5 rounded-xl shadow-md">
-                <Text className="text-xl font-semibold text-gray-800 mb-2">{subject.name}</Text>
-                <View className="flex flex-row flex-wrap">
+              <View className="bg-blueGray mx-4 my-2 p-[12px] rounded-[12px]">
+                <Text className="text-[16px] font-poppinsBold text-black mb-1">{subject.name}</Text>
+                <Text className="font-poppins text-[12px]">
+                  Średnia ocen —{' '}
+                  {new Intl.NumberFormat('pl-PL', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  }).format(subject.averageGrade)}
+                </Text>
+                <View className="flex flex-row flex-wrap mt-[8px] gap-[8px]">
                   {subject.grades.map((grade, gradeIndex) => (
                     <View
                       key={gradeIndex}
-                      className="bg-blue-100 rounded-full min-w-10 max-w-10 items-center justify-center px-3 py-1 mr-2 mb-2"
+                      className="bg-primary rounded-full items-center justify-center w-[24px] h-[24px]"
                     >
-                      <Text className="text-blue-600 font-medium">
+                      <Text className="text-white font-poppinsBold text-[15px]">
                         {grade.value || (
-                          <Ionicons name="ribbon-outline" size={16} className="text-blue-600" />
+                          <Ionicons name="ribbon-outline" size={15} className="text-white" />
                         )}
                       </Text>
                     </View>
@@ -104,34 +122,89 @@ const GradesList = () => {
             (subject, index) =>
               selectedSubject === subject.name && (
                 <ScrollView key={index}>
-                  <View className="flex flex-row items-center bg-blue-600 p-4">
-                    <Pressable onPress={toggleIsShow} className="mr-4">
-                      <Ionicons name="chevron-back" size={28} color="white" />
-                    </Pressable>
-                    <Text className="text-xl font-bold text-white">{subject.name}</Text>
+                  <View className="flex-row items-center mx-[20px] justify-center bg-primary h-[60px] rounded-[16px]">
+                    <Text className="font-poppinsBold text-white text-[24px]">{subject.name}</Text>
                   </View>
-                  {subject.grades.map((grade, index) => (
-                    <View
-                      key={index}
-                      className="flex flex-row items-center p-4 border-b border-gray-200"
-                    >
-                      <View className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mr-4">
-                        <Text className="text-3xl font-bold text-blue-600">
-                          {grade.value || (
-                            <Ionicons name="ribbon-outline" size={28} className="text-blue-600" />
-                          )}
+                  <View className="flex-row justify-between mx-[20px] mt-2 gap-[8px]">
+                    <View className="bg-blueGray p-2 rounded-[16px] flex-row w-[49%] justify-center gap-[8px] items-center">
+                      <View>
+                        <Text className="font-poppins text-[16px] leading-tight">
+                          Średnia{'\n'}z okresu
                         </Text>
                       </View>
                       <View>
-                        <Text className="text-lg font-semibold text-gray-800">{grade.name}</Text>
-                        <Text className="text-sm text-gray-500">{`${dayjs(grade.date).format('DD.MM.YYYY')} • Waga: ${grade.weight}.0`}</Text>
-                        <Text className="text-sm text-gray-500">{`Kategoria: ${grade.category}`}</Text>
+                        <Text className="font-poppinsBold text-[34px] ml-[10px]">
+                          {new Intl.NumberFormat('pl-PL', {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1
+                          }).format(subject.averageGrade)}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View className="bg-blueGray p-2 rounded-[16px] flex-row w-[49%] justify-center gap-[8px] items-center">
+                      <View>
+                        <Text className="font-poppins text-[16px] leading-tight">
+                          Średnia{'\n'}roczna
+                        </Text>
+                      </View>
+                      <View>
+                        <Text className="font-poppinsBold text-[34px] ml-[10px]">
+                          {new Intl.NumberFormat('pl-PL', {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1
+                          }).format(subject.averageGrade)}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View>
+                    <Text className="font-poppinsBold text-[24px] mx-[20px] my-[12px]">Oceny</Text>
+                  </View>
+                  {subject.grades.map((grade, index) => (
+                    <View key={index} className="p-4 bg-blueGray rounded-2xl mx-[20px] mb-[8px]">
+                      <View className="flex-row items-center">
+                        <View className="bg-primary rounded-full w-[36px] h-[36px] flex items-center justify-center mr-2">
+                          <Text className="text-[23px] font-poppinsBold text-white">
+                            {grade.value || (
+                              <Ionicons name="ribbon-outline" size={28} className="text-primary" />
+                            )}
+                          </Text>
+                        </View>
+                        <Text className="text-[16px] font-poppinsSemiBold text-black mt-">
+                          {grade.name}
+                        </Text>
+                      </View>
+                      <View className="flex-row w-full justify-between mt-[10px] gap-x-1">
+                        <View className="flex-none bg-primary rounded-2xl p-1 flex-row justify-center min-w-[85px]">
+                          <Text
+                            numberOfLines={1}
+                            className="text-[11px] font-poppinsBold text-white px-2"
+                          >
+                            {`${dayjs(grade.date).format('DD.MM.YYYY')}`}
+                          </Text>
+                        </View>
+
+                        <View className="flex-1 bg-primary rounded-2xl p-1 flex-row justify-center mx-1">
+                          <Text
+                            numberOfLines={1}
+                            className="text-[11px] font-poppinsBold text-white"
+                          >
+                            {`${grade.category}`}
+                          </Text>
+                        </View>
+
+                        <View className="flex-none bg-primary rounded-2xl p-1 flex-row justify-center">
+                          <Text
+                            numberOfLines={1}
+                            className="text-[11px] font-poppinsBold text-white px-2"
+                          >
+                            {`Waga — ${grade.weight}`}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   ))}
-                  <View className="m-4 bg-blue-50 rounded-xl p-4">
-                    <Text className="text-lg font-semibold text-blue-600">{`Średnia z okresu: ${subject.averageGrade}`}</Text>
-                  </View>
                 </ScrollView>
               )
           )}
