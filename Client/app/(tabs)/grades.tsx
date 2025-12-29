@@ -1,13 +1,11 @@
-// app/(tabs)/grades.tsx
-import { SafeAreaView } from 'react-native-safe-area-context' // Użyj safe-area-context zamiast 'react-native' dla spójności
-import GradesList from '../../components/GradesList' // Zaktualizowana ścieżka do komponentu
+import { SafeAreaView } from 'react-native-safe-area-context'
+import GradesList from '../../components/GradesList'
 
 const GradesView = () => {
   return (
-    <GradesList />
-    // <SafeAreaView style={{ flex: 1 }}>
-    //   <GradesList />
-    // </SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <GradesList />
+    </SafeAreaView>
   )
 }
 

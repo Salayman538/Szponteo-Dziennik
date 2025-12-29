@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ScrollView, View } from 'react-native'
 import dayjs from 'dayjs'
+import 'dayjs/locale/pl'
 import isBetween from 'dayjs/plugin/isBetween'
 import { useExams } from '@/hooks/useExams'
 import { useHomework } from '@/hooks/useHomework'
@@ -11,11 +12,16 @@ import LoadingScreen from './LoadingScreen'
 import { getStartAndEndOfWeek } from '@/utils/common'
 import DividerWithText from './DividerWithText'
 import { Exam, Homework } from '@/types/common'
+import Header from './Header'
 
 dayjs.extend(isBetween)
 
 const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
   const [currentWeek, setCurrentWeek] = useState(dayjs())
+  const todayDate = dayjs().format('YYYY-MM-DD').split('-')
+
+  const month = dayjs().locale('pl').format('MMMM')
+  const currentMonth = month.charAt(0).toUpperCase() + month.slice(1)
 
   const { exams, isLoading: examsLoading, isError: examsError } = useExams()
   const { homework, isLoading: homeworkLoading, isError: homeworkError } = useHomework()
@@ -48,6 +54,14 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
 
   return (
     <ScrollView>
+      <Header
+        headerData={{
+          title: taskType === 'exam' ? 'Sprawdziany' : 'Prace domowe',
+          subtitle: '',
+          box: { number: parseInt(todayDate[2]), title: currentMonth, subtitle: todayDate[0] }
+        }}
+      />
+
       <WeekSelector setCurrentWeek={setCurrentWeek} />
 
       {groupedTasks.map((groupOfTasks: Exam[] | Homework[], index) => {
@@ -56,7 +70,7 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
           : dayjs(groupOfTasks[0].deadline).format('dddd')
 
         return (
-          <View key={index}>
+          <View key={index} className="px-[20px]">
             <DividerWithText text={currentDay} />
             {groupOfTasks.map((task: Exam | Homework, index) => (
               <TaskCard

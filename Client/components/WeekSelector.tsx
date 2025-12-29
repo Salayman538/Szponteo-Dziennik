@@ -19,17 +19,17 @@ const WeekSelector = ({ setCurrentWeek }: { setCurrentWeek: (value: dayjs.Dayjs)
   const { startOfWeek, endOfWeek } = getStartAndEndOfWeek(formatted)
 
   return (
-    <View className="flex flex-row items-center justify-between px-4 mb-4">
-      <Pressable className="px-5" onPress={() => setWeekOffset(weekOffset - 1)}>
-        <ArrowLeft width={28} height={28} color="#4B5563" />
+    <View className="flex-row items-center justify-between px-[20px] gap-[24px] mt-[12px]">
+      <Pressable className="" onPress={() => setWeekOffset(weekOffset - 1)}>
+        <ArrowLeft width={24} height={24} color="#4B5563" />
       </Pressable>
 
-      <Text className="bg-primary text-white font-bold px-14 py-2 text-xl rounded-full">
+      <Text className="flex-1 flex-row justify-center text-center bg-primary text-white font-poppinsBold px-[12px] py-[10px] text-[16px] rounded-full">
         {dayjs(startOfWeek).format('DD.MM')} — {dayjs(endOfWeek).format('DD.MM')}
       </Text>
 
-      <Pressable className="px-5" onPress={() => setWeekOffset(weekOffset + 1)}>
-        <ArrowRight width={28} height={28} color="#4B5563" />
+      <Pressable className="" onPress={() => setWeekOffset(weekOffset + 1)}>
+        <ArrowRight width={24} height={24} color="#4B5563" />
       </Pressable>
     </View>
   )

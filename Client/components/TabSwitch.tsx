@@ -36,7 +36,7 @@ const TabSwitch = ({ currentView, onSwitch }: TabSwitchProps) => {
   const indicatorAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: translateX.value }],
-      width: tabWidth > 0 ? tabWidth : '33.333%' // Dynamiczna szerokość
+      width: tabWidth > 0 ? tabWidth : '33.333%'
     }
   })
 
@@ -44,7 +44,7 @@ const TabSwitch = ({ currentView, onSwitch }: TabSwitchProps) => {
     <View className="px-[20px]">
       <View
         className="flex-row bg-gray-200 rounded-[100px] h-[40px] justify-around items-center"
-        onLayout={handleLayout} // Mierzenie szerokości
+        onLayout={handleLayout}
       >
         {tabWidth > 0 && (
           <Animated.View
@@ -59,7 +59,6 @@ const TabSwitch = ({ currentView, onSwitch }: TabSwitchProps) => {
             <TouchableOpacity
               key={tab.value}
               onPress={() => onSwitch(tab.value)}
-              // Użycie flex-1 jest kluczowe, aby przyciski zajmowały równą przestrzeń
               className="flex-1 h-full flex justify-center items-center z-10"
               accessibilityRole="tab"
               accessibilityState={{ selected: isActive }}

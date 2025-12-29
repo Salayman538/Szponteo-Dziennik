@@ -3,7 +3,7 @@ import TasksList from '@/components/TasksList'
 
 const HomeworkView = () => {
   return (
-    <SafeAreaView className="bg-white" style={{ flex: 1, padding: 16 }}>
+    <SafeAreaView>
       <TasksList taskType="homework" />
     </SafeAreaView>
   )

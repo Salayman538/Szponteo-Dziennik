@@ -1,7 +1,10 @@
-// app/(tabs)/_layout.tsx
 import { Tabs, useRouter } from 'expo-router'
 import React, { useState, useEffect } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { View, Text, Modal, TouchableOpacity, Pressable } from 'react-native'
+import * as NavigationBar from 'expo-navigation-bar'
+
+// icons
 import Roll from '../../assets/icons/Roll.svg'
 import Calendar from '../../assets/icons/Calendar.svg'
 import Home from '../../assets/icons/Home.svg'
@@ -10,9 +13,6 @@ import Menu from '../../assets/icons/Menu.svg'
 import MenuAlt from '../../assets/icons/Menu alt.svg'
 import Attendance from '../../assets/icons/Attendance.svg'
 import Book from '../../assets/icons/Book.svg'
-import SettingLine from '../../assets/icons/Setting_line.svg'
-import { View, Text, Modal, StyleSheet, TouchableOpacity, Pressable } from 'react-native'
-import * as NavigationBar from 'expo-navigation-bar'
 
 export default function TabLayout() {
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function TabLayout() {
             flexDirection: 'row',
             left: 0,
             right: 0,
-            bottom: 12,
+            bottom: 0,
             elevation: 0,
             shadowOpacity: 0
           },
@@ -57,9 +57,9 @@ export default function TabLayout() {
         }}
       >
         <Tabs.Screen
-          name="grades" // Odpowiada plikowi app/(tabs)/grades.tsx (Oceny)
+          name="grades" // app/(tabs)/grades.tsx (Oceny)
           options={{
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color, focused }) => (
               <View
                 style={{
                   backgroundColor: focused ? '#265FEF' : '#EEF4FB',
@@ -76,9 +76,9 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="index" // Odpowiada plikowi app/(tabs)/index.tsx (Plan Lekcji)
+          name="index" // app/(tabs)/index.tsx (Plan Lekcji)
           options={{
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color, focused }) => (
               <View
                 style={{
                   backgroundColor: focused ? '#265FEF' : '#EEF4FB',
@@ -95,9 +95,9 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="mainpage" // Odpowiada plikowi app/(tabs)/mainpage.tsx (Strona Główna)
+          name="mainpage" // app/(tabs)/mainpage.tsx (Strona Główna)
           options={{
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color, focused }) => (
               <View
                 style={{
                   backgroundColor: focused ? '#265FEF' : '#EEF4FB',
@@ -114,9 +114,9 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="exams" // Odpowiada plikowi app/(tabs)/exams.tsx (Sprawdziany)
+          name="exams" // app/(tabs)/exams.tsx (Sprawdziany)
           options={{
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color, focused }) => (
               <View
                 style={{
                   backgroundColor: focused ? '#265FEF' : '#EEF4FB',
@@ -135,7 +135,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="menu"
           options={{
-            tabBarIcon: ({ color, size }) => <Menu color={color} width={24} height={24} />
+            tabBarIcon: ({ color }) => <Menu color={color} width={24} height={24} />
           }}
           listeners={{
             tabPress: (e) => {
@@ -145,26 +145,14 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="homework" // Odpowiada plikowi app/(tabs)/homework.tsx (Prace domowe)
+          name="homework" // app/(tabs)/homework.tsx (Prace domowe)
           options={{ href: null }}
         />
         <Tabs.Screen
-          name="attendance" // Odpowiada plikowi app/(tabs)/attendance.tsx (Frekwencja)
-          options={{ href: null }}
-        />
-        <Tabs.Screen
-          name="settings" // Odpowiada plikowi app/(tabs)/settings.tsx (Ustawienia)
+          name="attendance" // app/(tabs)/attendance.tsx (Frekwencja)
           options={{ href: null }}
         />
       </Tabs>
-
-      <View
-        className="
-          absolute bottom-0 self-center 
-          w-32 h-1.5 bg-black 
-          rounded-full bottom-1
-        "
-      />
       <Modal
         animationType="slide"
         transparent
@@ -173,7 +161,7 @@ export default function TabLayout() {
       >
         <Pressable className="flex-1 justify-end" onPress={() => setMenuVisible(false)}>
           <Pressable
-            className="h-[40%] bg-blueGray rounded-t-3xl bottom-5"
+            className="h-[40%] bg-blueGray rounded-t-3xl"
             onPress={(e) => e.stopPropagation()}
           >
             <View className="flex-row justify-start mb-[10] ml-[20] mr-[20] mt-[20]">
@@ -246,16 +234,6 @@ export default function TabLayout() {
             </View>
 
             <View className="flex-row justify-end gap-2 items-center h-[21%]">
-              <TouchableOpacity
-                className="rounded-3xl bg-[#265FEF] h-[36] w-[36] justify-center items-center"
-                onPress={() => {
-                  setMenuVisible(false)
-                  router.push('/(tabs)/settings')
-                }}
-              >
-                <SettingLine color={'white'} height={24} width={24} />
-              </TouchableOpacity>
-
               <TouchableOpacity
                 className="rounded-3xl bg-[#265FEF] h-[36] w-[36] justify-center items-center mr-[20]"
                 onPress={() => setMenuVisible(false)}

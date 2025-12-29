@@ -1,17 +1,23 @@
-// app/(tabs)/attendance.tsx
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { ScrollView, Text } from 'react-native'
 import AttendanceWeekly from '@/components/AttendanceWeekly'
 import AttendanceMonthly from '@/components/AttendanceMonthly'
 import AttendanceStatistics from '@/components/AttendanceStatistics'
 import TabSwitch from '@/components/TabSwitch'
+import Header from '@/components/Header'
+import dayjs from 'dayjs'
 
 type ViewMode = 'week' | 'month' | 'stats'
 
 const AttendanceView = () => {
   const [currentView, setCurrentView] = useState<ViewMode>('week')
   const [scrollEnabled, setScrollEnabled] = useState(true)
+
+  const todayDate = dayjs().format('YYYY-MM-DD').split('-')
+
+  const month = dayjs().locale('pl').format('MMMM')
+  const currentMonth = month.charAt(0).toUpperCase() + month.slice(1)
 
   const renderContent = () => {
     switch (currentView) {
@@ -28,9 +34,15 @@ const AttendanceView = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView scrollEnabled={scrollEnabled}>
+      <ScrollView scrollEnabled={scrollEnabled} contentContainerStyle={{ flexGrow: 1 }}>
+        <Header
+          headerData={{
+            title: 'Frekwencja',
+            subtitle: '',
+            box: { number: parseInt(todayDate[2]), title: currentMonth, subtitle: todayDate[0] }
+          }}
+        />
         <TabSwitch currentView={currentView} onSwitch={setCurrentView} />
-
         {renderContent()}
       </ScrollView>
     </SafeAreaView>

@@ -3,7 +3,7 @@ import TasksList from '@/components/TasksList'
 
 const ExamsView = () => {
   return (
-    <SafeAreaView className="bg-white" style={{ flex: 1, padding: 16 }}>
+    <SafeAreaView>
       <TasksList taskType="exam" />
     </SafeAreaView>
   )

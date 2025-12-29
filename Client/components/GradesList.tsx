@@ -6,6 +6,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-na
 import { useGrades } from '../hooks/useGrades'
 import LoadingScreen from './LoadingScreen'
 import ErrorMessage from './ErrorMessage'
+import Header from './Header'
 
 const GradesList = () => {
   const [isDetailsShow, setIsDetailsShow] = useState(false)
@@ -32,6 +33,11 @@ const GradesList = () => {
 
   const handleSubjectClick = (subjectName: string) => {
     setSelectedSubject(subjectName)
+    toggleIsShow()
+  }
+
+  const handleHeaderClick = () => {
+    setSelectedSubject('')
     toggleIsShow()
   }
 
@@ -66,63 +72,41 @@ const GradesList = () => {
       </ScrollView>
     )
 
+  const subtitle = `Średnia ocen — ${new Intl.NumberFormat('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(avgGrade)}`
+
   return (
     <ScrollView>
+      <Pressable onPress={() => handleHeaderClick()}>
+        <Header
+          headerData={{
+            title: 'Oceny',
+            subtitle: subtitle,
+            box: { number: 1, title: 'Semestr', subtitle: '2025' }
+          }}
+        />
+      </Pressable>
       {!isDetailsShow ? (
         <Animated.View style={animatedStyle}>
-          <View className='flex-row justify-between items-center mb-[16px]'>
-            <View className='mx-4'>
-              <Text className='font-poppinsBold text-[24px]'>Oceny</Text>
-              <Text className='font-poppins text-darkGray text-[14px]'>Średnia ocen 
-                <Text className='font-poppinsBold'> — {
-                new Intl.NumberFormat('pl-PL', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                }).format(avgGrade)}
-                </Text>
-              </Text>
-            </View>
-            <View className='rounded-2xl bg-primary flex-row h-[46px] w-[100px] justify-between items-center px-1 mr-4'>
-              <Text className='text-white font-poppinsBold text-[34px] ml-[10px] mt-[-2px]'>1</Text>
-              <Text className='text-white font-poppins text-[12px] m-[6px] mr-[10px]'>Semestr{"\n"}2025</Text>
-            </View>
-          </View>
-          <View className='flex mb-[16px]'>
-          <View className='mx-4'>
-            <Text className='text-[24px] font-poppinsBold'>Nowe oceny</Text>
-          </View>
-          <View className='bg-primary mx-4 rounded-2xl p-2 flex-row items-center mt-2'>
-            <View className='bg-white rounded-full w-[24px] h-[24px] items-center justify-center'>
-            <Text className='text-[15px] font-poppinsBold text-black'>1</Text>
-            </View>
-            <View className='ml-2'>
-              <Text className='text-white text-[14px] font-poppinsBold mt-[1]'>Wiedza o społeczeństwie</Text>
-            </View>
-          </View>
-          </View>
-          <View className="flex justify-center mx-4 mb-1">
-              <Text className=" text-black font-poppinsBold text-[24px]">Wszystkie oceny</Text>
-            </View>
           {grades?.map((subject, index) => (
             <Pressable key={index} onPress={() => handleSubjectClick(subject.name)}>
-              <View className="bg-blueGray mx-4 my-2 p-4 rounded-3xl">
+              <View className="bg-blueGray mx-4 my-2 p-[12px] rounded-[12px]">
                 <Text className="text-[16px] font-poppinsBold text-black mb-1">{subject.name}</Text>
-                <Text className='font-poppins text-[12px]'>Średnia ocen — {
-                    new Intl.NumberFormat('pl-PL', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2
-                    }).format(subject.averageGrade)
-        }</Text>
-                <View className="flex flex-row flex-wrap mt-2">
+                <Text className="font-poppins text-[12px]">
+                  Średnia ocen —{' '}
+                  {new Intl.NumberFormat('pl-PL', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  }).format(subject.averageGrade)}
+                </Text>
+                <View className="flex flex-row flex-wrap mt-[8px] gap-[8px]">
                   {subject.grades.map((grade, gradeIndex) => (
                     <View
                       key={gradeIndex}
-                      className="bg-primary rounded-full items-center justify-center w-[24px] h-[24px] mr-2 mb-2"
+                      className="bg-primary rounded-full items-center justify-center w-[24px] h-[24px]"
                     >
                       <Text className="text-white font-poppinsBold text-[15px]">
                         {grade.value || (
                           <Ionicons name="ribbon-outline" size={15} className="text-white" />
-                          // <Text className='text-[12px]'>br</Text>
                         )}
                       </Text>
                     </View>
@@ -138,78 +122,85 @@ const GradesList = () => {
             (subject, index) =>
               selectedSubject === subject.name && (
                 <ScrollView key={index}>
-                  <View className='flex-row justify-between items-center pb-4 mb-5'>
-                  <View className='mx-4 px-2'>
-                    <Text className='font-poppinsBold text-[24px]'>Oceny</Text>
-                    <Text className='font-poppins text-darkGray'>Średnia ocen 
-                      
-                    <Text className='font-poppinsBold'> — {
-                    new Intl.NumberFormat('pl-PL', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }).format(avgGrade)}
-                    </Text>
-                    </Text>
-                  </View>
-                        <View className='rounded-2xl bg-primary flex-row h-[46px] w-[100px] justify-between items-center px-1 mr-4'>
-                          <Text className='text-white font-poppinsBold text-[34px] ml-[10px] mt-[-2px]'>1</Text>
-                          <Text className='text-white font-poppins text-[12px] m-[6px] mr-[10px]'>Semestr{"\n"}2025</Text>
-                        </View>
-                  </View>
-                  <View className="flex-row items-center w-[335px] ml-4 justify-center bg-primary h-[60px] rounded-3xl">
-                    {/* <Pressable onPress={toggleIsShow} className="mr-4">
-                      <Ionicons name="chevron-back" size={28} color="white" />
-                    </Pressable> */}
+                  <View className="flex-row items-center mx-[20px] justify-center bg-primary h-[60px] rounded-[16px]">
                     <Text className="font-poppinsBold text-white text-[24px]">{subject.name}</Text>
                   </View>
-                  <View className='flex-row justify-between  ml-4 mr-4 mt-2'>
-                    <View className='bg-blueGray p-2 rounded-2xl flex-row h-[56px] w-[163.5px] justify-center items-center'>
-                      <View><Text className='font-poppins text-[16px]'>Średnia{"\n"}z okresu</Text></View>
-                      <View><Text className='font-poppinsBold text-[34px] ml-[10px] mt-[-4px]'>{
-                        new Intl.NumberFormat('pl-PL', {
-                          minimumFractionDigits: 1,
-                          maximumFractionDigits: 1
-                        }).format(subject.averageGrade)
-                      }</Text></View>
+                  <View className="flex-row justify-between mx-[20px] mt-2 gap-[8px]">
+                    <View className="bg-blueGray p-2 rounded-[16px] flex-row w-[49%] justify-center gap-[8px] items-center">
+                      <View>
+                        <Text className="font-poppins text-[16px] leading-tight">
+                          Średnia{'\n'}z okresu
+                        </Text>
+                      </View>
+                      <View>
+                        <Text className="font-poppinsBold text-[34px] ml-[10px]">
+                          {new Intl.NumberFormat('pl-PL', {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1
+                          }).format(subject.averageGrade)}
+                        </Text>
+                      </View>
                     </View>
-                    
-                    <View className='bg-blueGray p-2 rounded-2xl flex-row h-[56px] w-[163.5px] justify-center items-center'>
-                      <View><Text className='font-poppins text-[16px]'>Średnia{"\n"}roczna</Text></View>
-                      <View><Text className='font-poppinsBold text-[34px] ml-[10px] mt-[-4px]'>{
-                        new Intl.NumberFormat('pl-PL', {
-                          minimumFractionDigits: 1,
-                          maximumFractionDigits: 1
-                        }).format(subject.averageGrade)
-                      }</Text></View>
+
+                    <View className="bg-blueGray p-2 rounded-[16px] flex-row w-[49%] justify-center gap-[8px] items-center">
+                      <View>
+                        <Text className="font-poppins text-[16px] leading-tight">
+                          Średnia{'\n'}roczna
+                        </Text>
+                      </View>
+                      <View>
+                        <Text className="font-poppinsBold text-[34px] ml-[10px]">
+                          {new Intl.NumberFormat('pl-PL', {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1
+                          }).format(subject.averageGrade)}
+                        </Text>
+                      </View>
                     </View>
                   </View>
                   <View>
-                    <Text className="font-poppinsBold text-[24px] mt-4 mb-2 ml-4">Oceny</Text>
+                    <Text className="font-poppinsBold text-[24px] mx-[20px] my-[12px]">Oceny</Text>
                   </View>
                   {subject.grades.map((grade, index) => (
-                    <View
-                      key={index}
-                      className="p-4 bg-blueGray rounded-2xl ml-4 mb-[8px] mr-4"
-                    >
-                      <View className='flex-row items-center'>
-                      <View className="bg-primary rounded-full w-[36px] h-[36px] flex items-center justify-center mr-2">
-                        <Text className="text-[23px] font-poppinsBold text-white">
-                          {grade.value || (
-                            <Ionicons name="ribbon-outline" size={28} className="text-primary" />
-                          )}
+                    <View key={index} className="p-4 bg-blueGray rounded-2xl mx-[20px] mb-[8px]">
+                      <View className="flex-row items-center">
+                        <View className="bg-primary rounded-full w-[36px] h-[36px] flex items-center justify-center mr-2">
+                          <Text className="text-[23px] font-poppinsBold text-white">
+                            {grade.value || (
+                              <Ionicons name="ribbon-outline" size={28} className="text-primary" />
+                            )}
+                          </Text>
+                        </View>
+                        <Text className="text-[16px] font-poppinsSemiBold text-black mt-">
+                          {grade.name}
                         </Text>
                       </View>
-                        <Text className="text-[16px] font-poppinsSemiBold text-black mt-">{grade.name}</Text>
+                      <View className="flex-row w-full justify-between mt-[10px] gap-x-1">
+                        <View className="flex-none bg-primary rounded-2xl p-1 flex-row justify-center min-w-[85px]">
+                          <Text
+                            numberOfLines={1}
+                            className="text-[11px] font-poppinsBold text-white px-2"
+                          >
+                            {`${dayjs(grade.date).format('DD.MM.YYYY')}`}
+                          </Text>
                         </View>
-                      <View className='flex-row justify-between mt-[10px]'>
-                        <View className='bg-primary rounded-2xl p-1'>
-                        <Text className="text-[12px] font-poppinsBold text-white px-2 mt-[1]">{`${dayjs(grade.date).format('DD.MM.YYYY')}`}</Text>
+
+                        <View className="flex-1 bg-primary rounded-2xl p-1 flex-row justify-center mx-1">
+                          <Text
+                            numberOfLines={1}
+                            className="text-[11px] font-poppinsBold text-white"
+                          >
+                            {`${grade.category}`}
+                          </Text>
                         </View>
-                        <View className='bg-primary rounded-2xl p-1'>
-                        <Text className="text-[12px] font-poppinsBold text-white px-2 mt-[1]">{`${grade.category}`}</Text>
-                        </View>
-                        <View className='bg-primary rounded-2xl p-1'>
-                            <Text className='text-[12px] font-poppinsBold text-white px-2 mt-[1]'>{`Waga — ${grade.weight}`}</Text>
+
+                        <View className="flex-none bg-primary rounded-2xl p-1 flex-row justify-center">
+                          <Text
+                            numberOfLines={1}
+                            className="text-[11px] font-poppinsBold text-white px-2"
+                          >
+                            {`Waga — ${grade.weight}`}
+                          </Text>
                         </View>
                       </View>
                     </View>

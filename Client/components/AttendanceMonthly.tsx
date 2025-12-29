@@ -7,7 +7,6 @@ import AttendanceCalendar from './AttendanceCalendar'
 
 dayjs.locale('pl')
 
-// --- TYPY ---
 interface AttendanceLesson {
   position: number
   date: string
@@ -22,7 +21,6 @@ interface MonthConfig {
   end: string
 }
 
-// --- KONFIGURACJA MIESIĘCY ---
 const ACADEMIC_YEAR: MonthConfig[] = [
   { label: 'Wrzesień', start: '2025-09-01', end: '2025-09-30' },
   { label: 'Październik', start: '2025-10-01', end: '2025-10-31' },
@@ -35,7 +33,6 @@ const ACADEMIC_YEAR: MonthConfig[] = [
   { label: 'Maj', start: '2026-05-01', end: '2026-05-31' }
 ]
 
-// --- HOOK ---
 export const useAttendanceRange = (start: string, end: string) => {
   const apiHost = process.env.EXPO_PUBLIC_API_HOST
 
@@ -51,7 +48,6 @@ export const useAttendanceRange = (start: string, end: string) => {
   })
 }
 
-// --- KOMPONENT POZYCJI MIESIĄCA (Z FETCHINGIEM) ---
 const MonthSection = ({ config }: { config: MonthConfig }) => {
   const { data, isLoading, isError } = useAttendanceRange(config.start, config.end)
 
@@ -71,7 +67,6 @@ const MonthSection = ({ config }: { config: MonthConfig }) => {
   )
 }
 
-// --- GŁÓWNY EKRAN ---
 export default function AttendanceMonthly() {
   return (
     <View className="flex-1 bg-white">

@@ -2,11 +2,10 @@ import React from 'react'
 import { View } from 'react-native'
 import { Text } from 'react-native-svg'
 
-
-export default function mainpage(){ 
-return (
+export default function mainpage() {
+  return (
     <View>
-        <Text>Boksstop</Text>
-    </View>    
+      <Text>Boksstop</Text>
+    </View>
   )
 }

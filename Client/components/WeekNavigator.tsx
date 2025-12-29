@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Dimensions } from 'react-native'
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler'
 import dayjs from 'dayjs'
@@ -25,7 +25,6 @@ const getWeekDays = (weekOffset: number) => {
   if (startOfWeek.day() !== 1) {
     startOfWeek = startOfWeek.day(1)
   }
-  const daysOfWeek = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz']
 
   return Array.from({ length: 7 }, (_, i) => {
     const dateObj = startOfWeek.add(i, 'day')
@@ -90,51 +89,48 @@ const WeekNavigator = ({
   const weekDays = getWeekDays(weekOffset)
 
   return (
-    <GestureHandlerRootView>
-      <GestureDetector gesture={gesture}>
-        <Animated.View
-          className={
-            'w-[90%] flex-row justify-between self-center rounded-2xl bg-blueGray h-[80px] mb-[16px]'
-          }
-          style={animatedStyle}
-        >
-          <View className="flex-row justify-center w-[100%] items-center">
-            {weekDays.map((item) => (
-              <Pressable
-                key={item.fullDate} // Użyj pełnej daty jako klucza
-                onPress={() => setSelectedDay(item.fullDate)} // Przekazuj pełną datę do nadrzędnego komponentu
-                style={({ pressed }) => [pressed && { opacity: 0.7 }]}
-              >
-                <View className="justify-center items-center h-[80px] m-[1.5px] rounded-xl">
-                  <View
-                    className={`flex justify-center items-center w-12 rounded-[18px] h-[55px]
-                    ${selectedDay === item.fullDate ? 'bg-primary' : 'bg-blueGray'}
+    <View className="flex-row justify-center items-center p-[12px] bg-blueGray rounded-[16px] mx-[20px] overflow-hidden">
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <GestureDetector gesture={gesture}>
+          <Animated.View style={animatedStyle}>
+            <View className="flex-row justify-center">
+              {weekDays.map((item) => (
+                <Pressable
+                  key={item.fullDate}
+                  onPress={() => setSelectedDay(item.fullDate)} //
+                  className="flex-1 h-full rounded-[16px] overflow-hidden"
+                >
+                  <View className="justify-center items-center rounded-xl">
+                    <View
+                      className={`flex justify-center items-center w-full py-[12px] rounded-[16px]
+                    ${selectedDay === item.fullDate ? 'bg-primary ' : 'bg-transparent'}
                     `}
-                  >
-                    <Text
-                      className={`text-[12px] font-poppinsLight
+                    >
+                      <Text
+                        className={`text-[12px] font-poppinsLight text-black
                         ${selectedDay === item.fullDate ? 'text-white' : 'text-black'}
                         `}
-                    >
-                      {item.dayName}
-                    </Text>
-                    <Text
-                      className={` text-[18px] font-bold
+                      >
+                        {item.dayName}
+                      </Text>
+                      <Text
+                        className={` text-[18px] font-bold
                         ${selectedDay === item.fullDate ? 'text-white' : 'text-black'}
                         `}
-                    >
-                      {item.fullDate.split('.')[0][0] === '0'
-                        ? item.fullDate.split('.')[0][1]
-                        : item.fullDate.split('.')[0]}
-                    </Text>
+                      >
+                        {item.fullDate.split('-')[0][0] === '0'
+                          ? item.fullDate.split('-')[2][1]
+                          : item.fullDate.split('-')[2]}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              </Pressable>
-            ))}
-          </View>
-        </Animated.View>
-      </GestureDetector>
-    </GestureHandlerRootView>
+                </Pressable>
+              ))}
+            </View>
+          </Animated.View>
+        </GestureDetector>
+      </GestureHandlerRootView>
+    </View>
   )
 }
 
