@@ -46,43 +46,39 @@ const Note = ({ topic }: { topic: string }) => {
     <html>
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script>
+        // TA KONFIGURACJA JEST KLUCZOWA
+        window.MathJax = {
+          tex: {
+            inlineMath: [['$', '$']], 
+            displayMath: [['$$', '$$']]
+          }
+        };
+      </script>
       <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       <style>
-        body {
-          font-family: -apple-system, system-ui;
-          padding: 20px;
-          line-height: 1.6;
-          color: #333;
-          font-size: 16px;
-        }
-        h3 { color: #1a73e8; font-size: 24px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        strong { color: #000; }
-        .example-box {
-          background-color: #f8f9fa;
-          border-radius: 8px;
-          padding: 15px;
-          border-left: 5px solid #1a73e8;
-          margin-top: 20px;
-        }
-        .mjx-chtml { outline: none !important; }
+        body { font-family: sans-serif; line-height: 1.6; color: #333; }
+        h1 { font-size: 28px; color: #000; }
+        h2 { font-size: 22px; color: #1a73e8; margin-top: 20px; }
+        ul { padding-left: 10px; list-style: none }
+        li { margin-bottom: 10px; }
       </style>
     </head>
     <body>
       ${
         currentData
           ? currentData
-              // .replace(/^"|"$/g, '') // Usuwa cudzysłów na samym początku i na samym końcu
-              // .replace(/\\"/g, '"') // Zamienia \" na zwykły cudzysłów "
-              // .replace(/\\n/g, '<br>') // Na wszelki wypadek, gdyby \n przychodziło jako tekst
-              .replace(/\n/g, '<br>')
-              .replace('### Przykład', '<div class="example-box"><strong>Przykład</strong>') +
-            '</div>'
+              .trim()
+              .replace(/^"|"$/g, '')
+              .replace(/\\n/g, '<br />') // Zamienia tekstowe \n na br
+              .replace(/\\\\/g, '\\') // Naprawia podwójne backslashe z API
+              .replace(/\\/g, '\\') // Zapewnia pojedyncze backslashe dla LaTeX
           : ''
       }
     </body>
     </html>
   `
+
   if (isPending && !cachedData) {
     return <LoadingScreen text="Generowanie..." />
   }
