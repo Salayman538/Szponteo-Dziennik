@@ -16,8 +16,11 @@ import Book from '../../assets/icons/Book.svg'
 
 export default function TabLayout() {
   useEffect(() => {
-    NavigationBar.setVisibilityAsync('hidden')
-    NavigationBar.setBehaviorAsync('overlay-swipe')
+    // Usuń NavigationBar.setVisibilityAsync('hidden')
+    NavigationBar.setPositionAsync('absolute') // Pozwala na nakładanie, ale pasek jest widoczny
+    NavigationBar.setVisibilityAsync('visible')
+    NavigationBar.setBackgroundColorAsync('#ffffff01') // Przezroczyste tło paska systemowego
+    NavigationBar.setButtonStyleAsync('dark') // Ciemne ikony (strzałka/kreska) na jasnym tle
   }, [])
 
   const insets = useSafeAreaInsets()
@@ -36,10 +39,10 @@ export default function TabLayout() {
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             position: 'absolute',
-            height: 56,
+            // DODAJEMY insets.bottom, aby pasek był nad systemową nawigacją
+            height: 56 + insets.bottom,
+            paddingBottom: insets.bottom,
             borderTopWidth: 0,
-            justifyContent: 'space-around',
-            flexDirection: 'row',
             left: 0,
             right: 0,
             bottom: 0,
@@ -47,12 +50,14 @@ export default function TabLayout() {
             shadowOpacity: 0
           },
           tabBarItemStyle: {
+            // Centrujemy ikony w pionie biorąc pod uwagę padding dolny
             marginVertical: 8
           },
           sceneStyle: {
             backgroundColor: 'white',
             paddingTop: insets.top,
-            paddingBottom: 64
+            // Miejsce na tab bar + bezpieczny margines
+            paddingBottom: 64 + insets.bottom
           }
         }}
       >
@@ -161,7 +166,9 @@ export default function TabLayout() {
       >
         <Pressable className="flex-1 justify-end" onPress={() => setMenuVisible(false)}>
           <Pressable
-            className="h-[40%] bg-blueGray rounded-t-3xl"
+            // Zwiększamy wysokość o insets.bottom i dodajemy padding
+            style={{ paddingBottom: insets.bottom }}
+            className="h-[42%] bg-[#EEF4FB] rounded-t-3xl shadow-2xl"
             onPress={(e) => e.stopPropagation()}
           >
             <View className="flex-row justify-start mb-[10] ml-[20] mr-[20] mt-[20]">
