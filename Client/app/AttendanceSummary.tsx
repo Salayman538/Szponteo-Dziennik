@@ -19,7 +19,7 @@ const AttendanceSummary = () => {
   }, [navigation])
 
   if (isError) return <ErrorMessage />
-  if (isLoading) return <LoadingScreen />
+  if (isLoading) return <LoadingScreen text="Ładowanie..." />
 
   return (
     <View className="flex-1 bg-white p-[20px] font-poppins">

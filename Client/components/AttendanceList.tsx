@@ -39,7 +39,7 @@ const AttendanceList = () => {
         onGestureEnd={() => setScrollEnabled(true)}
       />
       {isLoading ? (
-        <LoadingScreen />
+        <LoadingScreen text="Ładowanie..." />
       ) : (
         <View className="flex-col gap-[12px]">
           {attendance?.map((day: AttendanceDay[]) =>

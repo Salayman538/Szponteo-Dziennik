@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from starlette.concurrency import run_in_threadpool
 
 from attendance_calculator import fetch_attendance_data, _calculate_attendance, TARGET_PERIOD_NUMBER
-from controllers import get_week_attendance, get_week_lessons, get_student_grades
+from controllers import get_week_attendance, get_week_lessons, get_student_grades, generate_note
 
 # dev
 # uvicorn main:app --reload --host 0.0.0.0 --port 8000
@@ -159,3 +159,10 @@ async def get_exams():
     exams_list.sort(key=lambda x: x["deadline"])
 
     return exams_list
+
+class NoteRequest(BaseModel):
+    topic: str
+
+@app.post("/api/generate-note")
+async def generate_note_endpoint(req: NoteRequest):
+    return generate_note(req.topic)

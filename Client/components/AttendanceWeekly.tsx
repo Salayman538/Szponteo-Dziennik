@@ -38,7 +38,7 @@ const AttendanceWeekly = ({
       />
       <View className="px-[20px] mt-[12px]">
         {isLoading ? (
-          <LoadingScreen />
+          <LoadingScreen text="Ładowanie..." />
         ) : (
           <View className="flex-col gap-[12px]">
             {attendance?.map((day: AttendanceDay[]) =>

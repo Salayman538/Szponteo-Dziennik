@@ -78,7 +78,7 @@ const LessonList = () => {
           <View className="border-b-[1px] border-whiteGray" />
           <View className="w-full py-[12px]">
             {isPending ? (
-              <LoadingScreen />
+              <LoadingScreen text="Ładowanie..." />
             ) : (
               lessons.map((day: Lesson[]) =>
                 day.map((lesson, index) => (
