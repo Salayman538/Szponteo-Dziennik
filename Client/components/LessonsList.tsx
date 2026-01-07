@@ -32,17 +32,6 @@ const LessonList = () => {
 
   const hasNoLessons = !isPending && lessonsForToday.length === 0
 
-  const todayDate = dayjs().format('YYYY-MM-DD').split('-')
-  const todayMonth = monthsOfYear[String(Number(todayDate[1]))]
-  let isWeekend = false
-  if (
-    dayjs(formattedDate, 'DD.MM', true).day() === 6 ||
-    dayjs(formattedDate, 'DD.MM', true).day() === 0
-  ) {
-    isWeekend = true
-  } else {
-    isWeekend = false
-  }
   if (isError) return <ErrorMessage />
 
   return (
