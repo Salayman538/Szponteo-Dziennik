@@ -68,7 +68,7 @@ const GradesList = () => {
   if (isLoading)
     return (
       <ScrollView className="flex m-10">
-        <LoadingScreen />
+        <LoadingScreen text="Ładowanie..." />
       </ScrollView>
     )
 

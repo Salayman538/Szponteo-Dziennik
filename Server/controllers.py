@@ -1,7 +1,14 @@
+import os
+import requests
 from datetime import timedelta
 from collections import defaultdict
+from dotenv import load_dotenv
 
 from helpers import convert_average_grade
+
+load_dotenv()
+
+PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
 async def get_student_grades(client):
     grades = []
@@ -110,3 +117,41 @@ async def get_week_attendance(client, date_from, date_to):
     ]
 
     return sorted_grouped_data
+
+def generate_note(topic):
+    url = "https://api.perplexity.ai/chat/completions"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {PERPLEXITY_API_KEY}"
+    }
+
+    system_instruction = (
+        "Jesteś ekspertem edukacyjnym. Tworzysz notatki w formacie html. Główny nagłówek to h1, sekcje h2. "
+        "Całą notatkę opakuj wyłącznie w znacznik <div>. "
+        "ZASADA KRYTYCZNA: Nie używaj przypisów ani numerów w nawiasach kwadratowych. "
+        "Pisz wszystko w jednej linii, ABSOLUTNY ZAKAZ znaków nowej linii (\\n). Zamiast nich używaj <br />. "
+        "Układ: 1. Tytuł (<h1>), 2. Wstęp, 3. 'Kluczowe pojęcia i definicje' (lista <ul>). "
+        "FORMUŁY MATEMATYCZNE: Używaj wyłącznie pojedynczych znaków dolara, np. $x^2 + 2x + 1$. "
+        "Nie używaj podwójnych backslashy ani formatu \\( \\). "
+        "Nie pisz nic poza kontenerem <div>."
+    )
+
+    payload = {
+        "model": "sonar",
+        "messages": [
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": f"Przygotuj notatkę na temat: {topic}. Pamiętaj: zero znaków nowej linii, zero źródeł."}
+        ],
+        "temperature": 0.1
+    }
+
+    try:
+        r = requests.post(url, json=payload, headers=headers)
+        r.raise_for_status()
+        content = r.json()["choices"][0]["message"]["content"]
+        
+        clean_content = content.replace("\n", "").replace("\r", "")
+        
+        return clean_content
+    except Exception as e:
+        return f"Błąd podczas generowania: {str(e)}"
