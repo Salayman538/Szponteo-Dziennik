@@ -21,13 +21,11 @@ const LessonList = () => {
 
   const { lessons, isPending, isError } = useLessons(selectedDay)
 
-  // Dynamiczne pobieranie danych do nagłówka (z dzisiejszej daty)
   const today = dayjs()
-  const todayDay = today.format('D') // np. "7"
-  const todayMonth = today.format('MMMM') // np. "styczeń" (zależne od locale)
-  const todayYear = today.format('YYYY') // np. "2026"
+  const todayDay = today.format('D')
+  const todayMonth = today.format('MMMM')
+  const todayYear = today.format('YYYY')
 
-  // Logika sprawdzania lekcji
   const lessonsForToday = lessons?.flat().filter((l: Lesson) => l.date === selectedDay) || []
 
   const hasNoLessons = !isPending && lessonsForToday.length === 0

@@ -16,11 +16,10 @@ import Book from '../../assets/icons/Book.svg'
 
 export default function TabLayout() {
   useEffect(() => {
-    // Usuń NavigationBar.setVisibilityAsync('hidden')
-    NavigationBar.setPositionAsync('absolute') // Pozwala na nakładanie, ale pasek jest widoczny
+    NavigationBar.setPositionAsync('absolute')
     NavigationBar.setVisibilityAsync('visible')
-    NavigationBar.setBackgroundColorAsync('#ffffff01') // Przezroczyste tło paska systemowego
-    NavigationBar.setButtonStyleAsync('dark') // Ciemne ikony (strzałka/kreska) na jasnym tle
+    NavigationBar.setBackgroundColorAsync('#ffffff01')
+    NavigationBar.setButtonStyleAsync('dark')
   }, [])
 
   const insets = useSafeAreaInsets()
@@ -40,7 +39,6 @@ export default function TabLayout() {
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             position: 'absolute',
-            // DODAJEMY insets.bottom, aby pasek był nad systemową nawigacją
             height: 56 + insets.bottom,
             paddingBottom: insets.bottom,
             borderTopWidth: 0,
@@ -51,13 +49,11 @@ export default function TabLayout() {
             shadowOpacity: 0
           },
           tabBarItemStyle: {
-            // Centrujemy ikony w pionie biorąc pod uwagę padding dolny
             marginVertical: 8
           },
           sceneStyle: {
             backgroundColor: 'white',
             paddingTop: insets.top,
-            // Miejsce na tab bar + bezpieczny margines
             paddingBottom: 64 + insets.bottom
           }
         }}
@@ -167,7 +163,6 @@ export default function TabLayout() {
       >
         <Pressable className="flex-1 justify-end" onPress={() => setMenuVisible(false)}>
           <Pressable
-            // Zwiększamy wysokość o insets.bottom i dodajemy padding
             style={{ paddingBottom: insets.bottom }}
             className="h-[42%] bg-[#EEF4FB] rounded-t-3xl shadow-2xl"
             onPress={(e) => e.stopPropagation()}

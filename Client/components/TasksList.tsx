@@ -26,7 +26,7 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
   const currentMonth = month.charAt(0).toUpperCase() + month.slice(1)
 
   const [isDetailsShow, setIsDetailsShow] = useState(false)
-  const [isNoteShow, setIsNoteShow] = useState(false) // Stan decydujący czy pokazać sekcję z notatką
+  const [isNoteShow, setIsNoteShow] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Exam | Homework | null>(null)
 
   const opacity = useSharedValue(1)
@@ -58,10 +58,8 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
     }
   })
 
-  // Obsługa przycisku wstecz
   useEffect(() => {
     const backAction = () => {
-      // Jeśli jesteśmy w szczegółach (niezależnie czy notatka jest widoczna czy nie), zamykamy szczegóły
       if (isDetailsShow) {
         toggleIsShow()
         return true
@@ -87,9 +85,7 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
 
   const toggleIsShow = () => {
     if (isDetailsShow) {
-      // Zamykanie widoku szczegółów
       setIsDetailsShow(false)
-      // Resetujemy notatkę przy wyjściu, żeby przy następnym wejściu nie była od razu widoczna (opcjonalne)
       setIsNoteShow(false)
 
       opacity.value = withTiming(0, { duration: 200 })
@@ -98,7 +94,6 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
         translateY.value = 0
       })
     } else {
-      // Otwieranie widoku szczegółów
       setIsDetailsShow(true)
       opacity.value = 0
       translateY.value = 20
@@ -133,7 +128,6 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
       </Pressable>
 
       {!isDetailsShow ? (
-        // --- LISTA ZADAŃ ---
         <Animated.View style={animatedStyle}>
           <WeekSelector setCurrentWeek={setCurrentWeek} />
 
@@ -170,7 +164,6 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
           })}
         </Animated.View>
       ) : (
-        // --- SZCZEGÓŁY ZADANIA ---
         <Animated.View style={animatedStyle} className="bg-white min-h-screen pb-10">
           {selectedTask && (
             <View>

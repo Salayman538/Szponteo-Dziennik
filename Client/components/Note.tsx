@@ -11,7 +11,6 @@ const Note = ({ topic }: { topic: string }) => {
   const { mutate, data: apiData, isPending, isError } = useGenerateNote()
   const [cachedData, setCachedData] = useState<string | null>(null)
 
-  // 1. Logika pobierania z pamięci lub generowania
   useEffect(() => {
     const checkCacheAndFetch = async () => {
       try {
@@ -22,14 +21,13 @@ const Note = ({ topic }: { topic: string }) => {
           mutate(topic)
         }
       } catch (e) {
-        mutate(topic) // W razie błędu cache, generuj nową
+        mutate(topic)
       }
     }
 
     if (topic) checkCacheAndFetch()
   }, [topic])
 
-  // 2. Zapisywanie do pamięci po udanym wygenerowaniu
   useEffect(() => {
     if (apiData) {
       AsyncStorage.setItem(`note_${topic}`, apiData)
@@ -44,7 +42,6 @@ const Note = ({ topic }: { topic: string }) => {
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <script>
-        // TA KONFIGURACJA JEST KLUCZOWA
         window.MathJax = {
           tex: {
             inlineMath: [['$', '$']], 

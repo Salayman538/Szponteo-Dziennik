@@ -97,7 +97,7 @@ const WeekNavigator = ({
               {weekDays.map((item) => (
                 <Pressable
                   key={item.fullDate}
-                  onPress={() => setSelectedDay(item.fullDate)} //
+                  onPress={() => setSelectedDay(item.fullDate)}
                   className="flex-1 h-full rounded-[16px] overflow-hidden"
                 >
                   <View className="justify-center items-center rounded-xl">

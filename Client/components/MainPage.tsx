@@ -10,20 +10,17 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 
-// Importy ikon SVG jako komponenty
-// Zakładam ścieżkę @/assets/icons/ zgodnie z Twoim opisem
-import MortarboardIcon from '@/assets/icons/Mortarboard.svg' // Średnia / Oceny
-import AttendanceIcon from '@/assets/icons/Attendance.svg' // Frekwencja
-import ExamIcon from '@/assets/icons/Exam.svg' // Sprawdziany
-import ClockIcon from '@/assets/icons/Clock.svg' // Czas lekcji
-import MapMarkerIcon from '@/assets/icons/map-marker-alt.svg' // Sala
-import TeacherIcon from '@/assets/icons/Teacher.svg' // Nauczyciel
-import CalendarIcon from '@/assets/icons/Calendar.svg' // Plan lekcji
-import BookIcon from '@/assets/icons/Book.svg' // Prace domowe
-import HomeIcon from '@/assets/icons/Home.svg' // Ustawienia
-import Roll from '@/assets/icons/Roll.svg' // Średnia / Oceny
+import MortarboardIcon from '@/assets/icons/Mortarboard.svg'
+import AttendanceIcon from '@/assets/icons/Attendance.svg'
+import ExamIcon from '@/assets/icons/Exam.svg'
+import ClockIcon from '@/assets/icons/Clock.svg'
+import MapMarkerIcon from '@/assets/icons/map-marker-alt.svg'
+import TeacherIcon from '@/assets/icons/Teacher.svg'
+import CalendarIcon from '@/assets/icons/Calendar.svg'
+import BookIcon from '@/assets/icons/Book.svg'
+import HomeIcon from '@/assets/icons/Home.svg'
+import Roll from '@/assets/icons/Roll.svg'
 
-// Import Hooków
 import { useGrades } from '@/hooks/useGrades'
 import { useLessons } from '@/hooks/useLessons'
 import { useAttendanceSummary } from '@/hooks/useAttendanceSummary'
@@ -32,20 +29,15 @@ import { useHomework } from '@/hooks/useHomework'
 import dayjs from 'dayjs'
 import LoadingScreen from './LoadingScreen'
 
-// Formatowanie daty dla nagłówka
 const getFormattedDate = () => {
   const date = new Date()
   return date.toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long' })
 }
 
-// Logika następnej lekcji
 const findNextLesson = (lessonsData: any[]) => {
   if (!lessonsData || !Array.isArray(lessonsData) || lessonsData.length === 0) return null
 
   const now = dayjs()
-  // dayjs().day() zwraca 0 dla Niedzieli, 1 dla Poniedziałku itd.
-  // W backendzie (controllers.py) dni są w liście od Poniedziałku (indeks 0).
-  // Dlatego: (1 + 6) % 7 = 0 (Poniedziałek), (0 + 6) % 7 = 6 (Niedziela)
   const currentDayIndex = (now.day() + 6) % 7
 
   const currentTimeInMinutes = now.hour() * 60 + now.minute()
@@ -57,12 +49,10 @@ const findNextLesson = (lessonsData: any[]) => {
   const next = todayLessons.find((lesson: any) => {
     if (!lesson.time) return false
 
-    // Parsowanie czasu z formatu "HH:mm-HH:mm" (np. "08:00-08:45")
     const [startTimeStr, endTimeStr] = lesson.time.split('-')
     const [endHour, endMin] = endTimeStr.split(':').map(Number)
     const lessonEndTimeInMinutes = endHour * 60 + endMin
 
-    // Lekcja jest "następna", jeśli jeszcze się nie skończyła
     return lessonEndTimeInMinutes > currentTimeInMinutes
   })
 
@@ -73,7 +63,6 @@ const HomeScreen = () => {
   const navigation = useNavigation<any>()
   const todayDateString = new Date().toISOString().split('T')[0]
 
-  // Pobieranie danych z hooków
   const { avgGrade, isLoading: loadingGrades } = useGrades()
   const { attendanceSummary, isLoading: loadingAtt } = useAttendanceSummary('all')
   const { lessons, isPending: loadingLessons } = useLessons(todayDateString)
@@ -86,20 +75,19 @@ const HomeScreen = () => {
     if (!exams) return { upcomingExams: [], examsCount: 0 }
 
     const now = new Date()
-    now.setHours(0, 0, 0, 0) // Resetujemy godzinę, aby uwzględnić dzisiejsze sprawdziany
+    now.setHours(0, 0, 0, 0)
 
     const nextMonth = new Date()
-    nextMonth.setMonth(now.getMonth() + 1) // Ustawiamy datę na "za miesiąc"
+    nextMonth.setMonth(now.getMonth() + 1)
 
-    // Filtrujemy sprawdziany: data większa/równa dzisiaj ORAZ mniejsza/równa dacie za miesiąc
     const filtered = exams.filter((exam: any) => {
       const examDate = new Date(exam.deadline)
       return examDate >= now && examDate <= nextMonth
     })
 
     return {
-      upcomingExams: filtered, // Lista tylko z najbliższego miesiąca
-      examsCount: filtered.length // Liczba do kafelka statystyk
+      upcomingExams: filtered,
+      examsCount: filtered.length
     }
   }, [exams])
 
@@ -112,7 +100,6 @@ const HomeScreen = () => {
     const nextMonth = new Date()
     nextMonth.setMonth(now.getMonth() + 1)
 
-    // Filtrujemy prace domowe: termin >= dzisiaj ORAZ termin <= za miesiąc
     return homework.filter((hw: any) => {
       const hwDate = new Date(hw.deadline)
       return hwDate >= now && hwDate <= nextMonth
@@ -128,8 +115,7 @@ const HomeScreen = () => {
     )
   }
 
-  // Stałe kolory ikon
-  const ICON_BLUE = '#3b82f6' // Główny niebieski
+  const ICON_BLUE = '#3b82f6'
   const ICON_WHITE = '#FFFFFF'
 
   return (
@@ -314,7 +300,6 @@ const HomeScreen = () => {
   )
 }
 
-// Komponent pomocniczy dla kafelka Szybkiego Dostępu
 const QuickAccessItem = ({
   title,
   icon,
