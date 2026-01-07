@@ -202,7 +202,7 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
                       <Text className="font-poppinsSemiBold text-[14px] text-gray-600">Typ</Text>
                     </View>
                     <Text className="font-poppinsBold text-[16px]" numberOfLines={2}>
-                      {selectedTask.type}
+                      {'type' in selectedTask ? selectedTask.type : 'Brak typu'}
                     </Text>
                   </View>
                 </View>
