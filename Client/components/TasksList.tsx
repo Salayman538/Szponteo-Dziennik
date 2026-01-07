@@ -113,7 +113,12 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
   }))
 
   if (examsError || homeworkError) return <ErrorMessage />
-  if (examsLoading || homeworkLoading) return <LoadingScreen text="Ładowanie..." />
+  if (examsLoading || homeworkLoading)
+    return (
+      <View className="flex-row min-h-[100vh] items-center justify-center">
+        <LoadingScreen text="Ładowanie..." />
+      </View>
+    )
 
   return (
     <ScrollView>
@@ -131,6 +136,17 @@ const TasksList = ({ taskType }: { taskType: 'exam' | 'homework' }) => {
         // --- LISTA ZADAŃ ---
         <Animated.View style={animatedStyle}>
           <WeekSelector setCurrentWeek={setCurrentWeek} />
+
+          {groupedTasks.length === 0 && (
+            <View className="flex-1 items-center justify-center py-12 px-8">
+              <Ionicons name="checkmark-circle-outline" size={64} color="#9CA3AF" />
+              <Text className="font-poppinsSemiBold text-[20px] text-gray-500 text-center mt-4 mb-2">
+                {taskType === 'exam'
+                  ? 'Brak sprawdzianów w tym tygodniu'
+                  : 'Brak zadań domowych w tym tygodniu'}
+              </Text>
+            </View>
+          )}
 
           {groupedTasks.map((groupOfTasks: Exam[] | Homework[], index) => {
             const currentDay = dayjs().isSame(dayjs(groupOfTasks[0].deadline), 'day')

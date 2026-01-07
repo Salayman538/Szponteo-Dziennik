@@ -30,6 +30,7 @@ import { useAttendanceSummary } from '@/hooks/useAttendanceSummary'
 import { useExams } from '@/hooks/useExams'
 import { useHomework } from '@/hooks/useHomework'
 import dayjs from 'dayjs'
+import LoadingScreen from './LoadingScreen'
 
 // Formatowanie daty dla nagłówka
 const getFormattedDate = () => {
@@ -121,8 +122,8 @@ const HomeScreen = () => {
 
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center bg-[#F2F2F6]">
-        <ActivityIndicator size="large" color="#3b82f6" />
+      <View className="flex-row min-h-[100vh] items-center justify-center">
+        <LoadingScreen text="Ładowanie..." />
       </View>
     )
   }

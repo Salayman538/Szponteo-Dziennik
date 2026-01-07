@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ScrollView, Text, View, Pressable, BackHandler } from 'react-native'
 import dayjs from 'dayjs'
 import { Ionicons } from '@expo/vector-icons'
@@ -13,6 +13,8 @@ const GradesList = () => {
   const [selectedSubject, setSelectedSubject] = useState('')
 
   const { grades, avgGrade, isLoading, isError } = useGrades()
+
+  const scrollRef = useRef<ScrollView>(null)
 
   const opacity = useSharedValue(1)
   const translateY = useSharedValue(0)
@@ -32,29 +34,35 @@ const GradesList = () => {
   }, [isDetailsShow])
 
   const handleSubjectClick = (subjectName: string) => {
+    scrollRef.current?.scrollTo({
+      y: 0
+    })
+
     setSelectedSubject(subjectName)
     toggleIsShow()
   }
 
   const handleHeaderClick = () => {
-    setSelectedSubject('')
-    toggleIsShow()
+    if (selectedSubject !== '') {
+      scrollRef.current?.scrollTo({
+        y: 0
+      })
+
+      setSelectedSubject('')
+      toggleIsShow()
+    }
   }
 
   const toggleIsShow = () => {
     if (isDetailsShow) {
       setIsDetailsShow(false)
-      opacity.value = withTiming(0, { duration: 200 })
-      translateY.value = withTiming(20, { duration: 300 }, () => {
+      opacity.value = withTiming(0, { duration: 300 }, () => {
         opacity.value = 1
-        translateY.value = 0
       })
     } else {
       setIsDetailsShow(true)
       opacity.value = 0
-      translateY.value = 20
       opacity.value = withTiming(1, { duration: 300 })
-      translateY.value = withTiming(0, { duration: 300 })
     }
   }
 
@@ -75,7 +83,7 @@ const GradesList = () => {
   const subtitle = `Średnia ocen — ${new Intl.NumberFormat('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(avgGrade)}`
 
   return (
-    <ScrollView>
+    <ScrollView ref={scrollRef}>
       <Pressable onPress={() => handleHeaderClick()}>
         <Header
           headerData={{
@@ -122,7 +130,7 @@ const GradesList = () => {
             (subject, index) =>
               selectedSubject === subject.name && (
                 <ScrollView key={index}>
-                  <View className="flex-row items-center mx-[20px] justify-center bg-primary h-[60px] rounded-[16px]">
+                  <View className="flex-row p-[12px] items-center mx-[20px] justify-center bg-primary minh-[60px] rounded-[16px]">
                     <Text className="font-poppinsBold text-white text-[24px]">{subject.name}</Text>
                   </View>
                   <View className="flex-row justify-between mx-[20px] mt-2 gap-[8px]">
@@ -171,7 +179,7 @@ const GradesList = () => {
                             )}
                           </Text>
                         </View>
-                        <Text className="text-[16px] font-poppinsSemiBold text-black mt-">
+                        <Text className="text-[16px] font-poppinsSemiBold text-black max-w-[90%]">
                           {grade.name}
                         </Text>
                       </View>

@@ -127,13 +127,14 @@ def generate_note(topic):
 
     system_instruction = (
         "Jesteś ekspertem edukacyjnym. Tworzysz notatki w formacie html. Główny nagłówek to h1, sekcje h2. "
-        "Całą notatkę opakuj wyłącznie w znacznik <div>. "
+        "Całą notatkę opakuj wyłącznie w znacznik <div>. Nie używaj '**'."
         "ZASADA KRYTYCZNA: Nie używaj przypisów ani numerów w nawiasach kwadratowych. "
         "Pisz wszystko w jednej linii, ABSOLUTNY ZAKAZ znaków nowej linii (\\n). Zamiast nich używaj <br />. "
         "Układ: 1. Tytuł (<h1>), 2. Wstęp, 3. 'Kluczowe pojęcia i definicje' (lista <ul>). "
         "FORMUŁY MATEMATYCZNE: Używaj wyłącznie pojedynczych znaków dolara, np. $x^2 + 2x + 1$. "
         "Nie używaj podwójnych backslashy ani formatu \\( \\). "
         "Nie pisz nic poza kontenerem <div>."
+        "Nie używaj żadnych dodatkowych znaków LaTeX oraz backslashy (\) jeżeli nie generujesz notatki Matematycznej!" 
     )
 
     payload = {

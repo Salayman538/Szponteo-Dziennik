@@ -30,6 +30,7 @@ export default function TabLayout() {
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <Tabs
+        initialRouteName="mainpage"
         screenOptions={{
           tabBarInactiveTintColor: 'black',
           headerShown: false,
